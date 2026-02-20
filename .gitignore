@@ -1,0 +1,19 @@
+# Ignore raw data
+data/raw/
+
+# Large data files
+*.json
+*.json.gz
+
+# R
+.Rhistory
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
