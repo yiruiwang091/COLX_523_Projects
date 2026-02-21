@@ -32,11 +32,11 @@ This satisfies the requirement that we still build a scraper while relying on a 
 
 ## 3) Corpus description & structure/metadata
 
-**Text type**: consumer product reviews (short-form opinionated text)
-**Language**: English
-**Genre/register**: informal evaluative writing; concrete, scenario-based narratives (“camping trip,” “rain,” “setup”), mixed with short descriptive statements and comparisons.
-**Topic/content**: outdoor and camping products under the Coleman brand (e.g., tents, coolers, stoves, sleeping bags, lanterns).
-**Who wrote the texts**: Amazon reviewers (general public)
+**Text type**: consumer product reviews (short-form opinionated text)  
+**Language**: English  
+**Genre/register**: informal evaluative writing; concrete, scenario-based narratives (“camping trip,” “rain,” “setup”), mixed with short descriptive statements and comparisons. 
+**Topic/content**: outdoor and camping products under the Coleman brand (e.g., tents, coolers, stoves, sleeping bags, lanterns)  
+**Who wrote the texts**: Amazon reviewers (general public)  
 **Document length**: average review length: 55
 
 The corpus is structured through product grouping (by `asin`):
