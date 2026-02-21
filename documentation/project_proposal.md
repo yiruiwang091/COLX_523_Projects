@@ -83,7 +83,7 @@ We will target a specific subset: **Coleman** within the Sports & Outdoors categ
 
 **Reasons:**
 
-- **Suitable for non-expert corpus browsers:** familiar everyday products and concrete scenario-based language of reviews makes the corpus intuitive and easy for non-experts to browse, search, and understand without technical background.  
+- **Suitable for non-expert corpus browsers:** familiar everyday products and concrete scenario-based language of reviews make the corpus intuitive and easy for non-experts to browse, search, and understand without technical background.  
 - **Strong for attribute-level sentiment modeling:** reviews naturally talk in attribute phrases that are easy to label and model, e.g. durability, ease of setup, size/space, weight/portability, weather resistance, comfort, value, build quality, design, reliability.
 
 **Filtering procedure:**
@@ -135,7 +135,7 @@ Target ~1000 annotated instances (attribute-sentiment spans). We will
 design sampling so that:
 
 - each instance is annotated by at least two annotators,
-- annotators each label ~250-500 spans,
+- annotators each label ~500 spans,
 - we include a mix of product types to avoid overfitting to a single product.
 
 
@@ -159,7 +159,7 @@ We will keep the corpus reproducible and easy to use by storing:
     - `annotator ID`, `timestamp`, and version of guidelines
 
 The browser will support interactive exploration:
-- **Browse by product:** show product title/image and a list of reviews; filter by rating or helpful votes.
+- **Browse by product:** show product title/image and a list of reviews; allow sorting/filtering by product sales rank.
 - **Review view:** display full review text with sentence segmentation; allow span highlighting.
 - **Annotation panel:** dropdowns for attribute + sentiment.
 - **Export:** download annotation JSONL and summary stats (counts by attribute/sentiment).
