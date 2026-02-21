@@ -34,7 +34,7 @@ This satisfies the requirement that we still build a scraper while relying on a 
 
 **Text type**: consumer product reviews (short-form opinionated text)  
 **Language**: English  
-**Genre/register**: informal evaluative writing; concrete, scenario-based narratives (“camping trip,” “rain,” “setup”), mixed with short descriptive statements and comparisons. 
+**Genre/register**: informal evaluative writing; concrete, scenario-based narratives (“camping trip,” “rain,” “setup”), mixed with short descriptive statements and comparisons.  
 **Topic/content**: outdoor and camping products under the Coleman brand (e.g., tents, coolers, stoves, sleeping bags, lanterns)  
 **Who wrote the texts**: Amazon reviewers (general public)  
 **Document length**: average review length: 55
@@ -57,7 +57,7 @@ The corpus is structured through product grouping (by `asin`):
 and contains metadata:
 
 - **Review-level**: overall star rating, review text
-- **Product-level**: product title, sub-categories (e.g. `"cat_l5"`), price, description, product image, sales rank.
+- **Product-level**: product title, sub-categories (e.g., `"cat_l5"`), price, description, product image, sales rank.
 
       {
         "asin": "B002BZX8Z6",
@@ -83,8 +83,8 @@ We will target a specific subset: **Coleman** within the Sports & Outdoors categ
 
 **Reasons:**
 
-- **Suitable for non-expert corpus browsers:** familiar everyday products and concrete scenario-based language of reviews make the corpus intuitive and easy for non-experts to browse, search, and understand without technical background.  
-- **Strong for attribute-level sentiment modeling:** reviews naturally talk in attribute phrases that are easy to label and model, e.g. durability, ease of setup, size/space, weight/portability, weather resistance, comfort, value, build quality, design, reliability.
+- **Suitable for non-expert corpus browsers:** familiar everyday products and concrete scenario-based language of reviews make the corpus intuitive and easy for non-experts to browse, search, and understand without a technical background.  
+- **Strong for attribute-level sentiment modeling:** reviews naturally talk in attribute phrases that are easy to label and model, e.g., durability, ease of setup, size/space, weight/portability, weather resistance, comfort, value, build quality, design, reliability.
 
 **Filtering procedure:**
 
@@ -98,12 +98,9 @@ We will target a specific subset: **Coleman** within the Sports & Outdoors categ
 
 ## 5) Preliminary annotation plan
 
-We propose an attribute-level sentiment annotation that is easy for
-non-experts to understand but rich enough to train downstream systems.
+We propose an attribute-level sentiment annotation that is easy for non-experts to understand but rich enough to train downstream systems.
 
-**Unit of annotation (instance):** a span within a review that expresses
-an opinion about a specific product attribute. Annotators will highlight
-the relevant text span and assign labels.
+**Unit of annotation (instance):** a span within a review that expresses an opinion about a specific product attribute. Annotators will highlight the relevant text span and assign labels.
 
 **Labels (initial proposal):**
 
@@ -134,9 +131,9 @@ the relevant text span and assign labels.
 Target ~1000 annotated instances (attribute-sentiment spans). We will
 design sampling so that:
 
-- each instance is annotated by at least two annotators,
-- annotators each label ~500 spans,
-- we include a mix of product types to avoid overfitting to a single product.
+- each instance is annotated by at least two annotators;
+- annotators each label ~500 spans;
+- we include a mix of product types to avoid overfitting to a single product
 
 
 ## 6) Corpus storage & Browser interface
