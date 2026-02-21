@@ -164,6 +164,7 @@ We assign a **deterministic primary key** to each joined review record:
   "cat_l4": "Tents & Shelters",
   "cat_l5": "Tents"
 }
+```
 
 ## Why both files are required
 
