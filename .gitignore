@@ -1,9 +1,6 @@
-# Ignore raw data
-data/raw/
-
-# Large data files
-*.json
-*.json.gz
+# Ignore raw data files
+data/raw/*
+!data/raw/.gitkeep
 
 # R
 .Rhistory

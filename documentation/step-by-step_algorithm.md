@@ -2,13 +2,15 @@
 
 ## Objective
 
-CBuild a reproducible proof-of-concept corpus from Amazon Reviews v2 Sports_and_Outdoors by:
+Build a fully reproducible proof-of-concept corpus from Amazon Reviews v2 (Sports_and_Outdoors) by:
 
-- Downloading review and metadata dumps
-- Optionally extracting .gz files
-- Indexing metadata by asin
-- Streaming reviews and joining on asin
-- Writing a merged JSONL file for downstream NLP use
+- Downloading review and metadata dumps (`.json.gz`)
+- Optionally extracting compressed files
+- Filtering product metadata by **brand** (default: `"Coleman"`)
+- Collecting corresponding `asin` values
+- Streaming reviews and joining on `asin`
+- Keeping only reviews with non-empty `reviewText`
+- Writing a merged JSONL corpus for downstream NLP use
 
 The full pipeline runs as a single executable script:
 
@@ -16,20 +18,20 @@ The full pipeline runs as a single executable script:
 
 ---
 
-# Data Sources
+## Data Sources
 
 - Reviews (5-core):
 <https://mcauleylab.ucsd.edu/public_datasets/data/amazon_v2/categoryFilesSmall/Sports_and_Outdoors_5.json.gz>
 - Metadata:
 <https://mcauleylab.ucsd.edu/public_datasets/data/amazon_v2/metaFiles2/meta_Sports_and_Outdoors.json.gz>
 
-Both are JSON Lines (.json.gz).
+Both files are in JSON Lines format and compressed as `.json.gz`.
 
 ---
 
-# Step-by-Step Procedure
+## Step-by-Step Procedure
 
-## Step 1 — Download (Programmatic Acquisition)
+### Step 1 — Download (Programmatic Acquisition)
 
 The script:
 
@@ -37,92 +39,106 @@ The script:
 2. Downloads:
    - `Sports_and_Outdoors_5.json.gz`
    - `meta_Sports_and_Outdoors.json.gz`
-3. Skips download if files already exist.
+3. Skips downloading if files already exist and are non-empty.
 
-This ensures reproducibility without manual steps.
+This guarantees reproducibility without manual intervention.
 
 ---
 
-## Step 2 — Decompression
+### Step 2 — Decompression
 
-Unless `--no-extract` is specified:
-
-1. Decompress each `.json.gz` into `.json`
+1. Decompress `.json.gz` into `.json`
 2. Store decompressed files in `data/raw/`
 
-The script can operate on either `.json` or `.json.gz` files.
+The script automatically works with either `.json` or `.json.gz`.
 
 ---
 
-## Step 3 — Parse and Index Metadata
+### Step 3 — Brand-Filtered Metadata Indexing
 
-1. Read metadata file line-by-line.
-2. For each record:
-   - Extract `asin`
-   - Extract selected fields:
-     - `title`
-     - `brand`
-     - `price`
-     - `category`
-3. Normalize category structure:
-   - Handle both flat and nested SNAP-style formats
-   - Keep up to 5 levels as cat_l1 … cat_l5
-   - Missing levels are set to null
-4. Store results in: meta_index[asin] → {title, brand, price, cat_l1 … cat_l5}
+1. Read metadata line-by-line.
+2. Normalize and match `brand` (case-insensitive) with `--brand` argument.
+3. Keep only products matching the selected brand.
+4. Extract selected metadata fields:
+   - `asin`
+   - `title`
+   - `price`
+   - `description`
+   - `rank`
+   - `imageURL`
+   - `category` (normalized and split into hierarchical levels `cat_l1`–`cat_l5`)
+5. Handle both flat and nested SNAP-style category structures.
+6. Store:
+   - `meta_index[asin] → metadata record`
+   - `asin_set → set of selected product asins`
 
-This enables O(1) metadata lookup during the review–metadata join step.
+This enables efficient O(1) metadata lookup during joining.
 
 ---
 
-## Step 4 — Stream Reviews and Join
+### Step 4 — Stream Reviews and Join
 
-1. Read reviews file line-by-line (streaming).
+1. Read reviews line-by-line (streaming).
 2. For each review:
-   - Extract `asin`
-   - Lookup metadata in `meta_index`
-3. If metadata exists:
-   - Merge review fields + metadata fields
-4. If metadata does not exist:
-   - Skip review (default)
-   
-Streaming prevents loading the full reviews file into memory.
+   - Keep only if `asin` exists in `asin_set`
+   - Drop if `reviewText` is missing or empty
+   - Join review fields with metadata fields
+3. Assign a deterministic `review_id` as the primary key based on streaming order.
+
+Streaming ensures scalability without loading the entire reviews file into memory.
 
 ---
 
-## Step 5 — Output Joined Corpus
+### Step 5 — Output Joined Corpus
 
-1. Create `data/processed/` if it does not exist.
-2. Write merged records into: data/processed/sports_outdoors_joined.jsonl
-3. Each line is a valid JSON object.
-4. The number of written records can be limited using `--limit` (default: 2000 for POC).
+1. Write merged records into: `data/processed/sports_outdoors_joined_Coleman.jsonl`
+2. Each line is a valid JSON object.
+3. Output size can be limited using `--limit` (default: 2000).
+
+## Run Example
+
+```bash
+python src/poc_download_and_join.py --limit 100
+```
+
+Optional arguments:
+
+- `--out data`
+- `--no-extract`
+- `--timeout 60`
 
 ---
 
-# Output Schema
+## Output Schema
 
 Each JSONL record contains:
 
-Review-level fields:
+### Primary Key
+- `review_id` (int)
+
+### Review Fields
 - `asin`
 - `overall`
-- `summary`
 - `reviewText`
-- `unixReviewTime`
-- `reviewerID`
 
-Metadata fields:
+### Metadata Fields
 - `title`
-- `brand`
 - `price`
-- `cat_l1` ... `cat_l5`
+- `description`
+- `rank`
+- `imageURL`
+- `cat_l1`
+- `cat_l2`
+- `cat_l3`
+- `cat_l4`
+- `cat_l5`
 
 ---
 
-# Design Rationale
+## Design Rationale
 
-- Reviews provide linguistic content.
-- Metadata provides structured product attributes.
-- `asin` enables deterministic integration.
+- Brand-level filtering produces a focused corpus for product-issue analysis.
+- `asin` provides deterministic integration between reviews and metadata.
 - Metadata is indexed in memory for O(1) lookup.
 - Reviews are streamed for scalability.
-- JSONL format supports extensibility and downstream NLP pipelines.
+- JSONL format supports extensibility and downstream NLP workflows.
