@@ -95,6 +95,7 @@ It demonstrates a fully reproducible pipeline:
 - collects the corresponding `asin` values,
 - streams and joins reviews via the shared key `asin`,
 - keeps reviews with non-empty `reviewText`,
+- assigns a deterministic `review_id` (primary key) in streaming order,
 - outputs the final joined corpus in **JSONL** format.
 
 ## How to Run
@@ -131,18 +132,22 @@ After running, the script creates:
 - data/raw/meta_Sports_and_Outdoors.json.gz
 - data/raw/Sports_and_Outdoors_5.json
 - data/raw/meta_Sports_and_Outdoors.json
-- data/processed/sports_outdoors_joined.jsonl
+- data/processed/sports_outdoors_joined_Coleman.jsonl
 
 Each line in the JSONL file is a joined record created by matching the review file and metadata file on `asin`.
 
 We keep a **selected subset of fields** from each source:
-- Review fields (`asin`, `overall`, `reviewText`)
-- Metadata fields (`asin`, `title`, `price`, `description`, `rank`, `imageURL`, `cat_l1`–`cat_l5`)
+- Review fields: `asin`, `overall`, `reviewText`
+- Metadata fields: `asin`, `title`, `price`, `description`, `rank`, `imageURL`, `cat_l1`–`cat_l5`
+
+We assign a **deterministic primary key** to each joined review record:
+- Primary key: `review_id` (assigned sequentially during streaming)
 
 ### Example Record
 
 ```json
 {
+  "review_id": 0,
   "asin": "B002BZX8Z6",
   "overall": 4.0,
   "reviewText": "Good quality product and works as expected.",
@@ -177,7 +182,7 @@ It covers the end-to-end pipeline implemented in `src/poc_download_and_join.py`,
 - Programmatic download of reviews + metadata
 - POC-size control via `--limit`
 - Metadata parsing and in-memory indexing by `asin`
-- Writing the joined corpus to JSONL (`data/processed/sports_outdoors_joined.jsonl`)
+- Writing the joined corpus to JSONL (`data/processed/sports_outdoors_joined_Coleman.jsonl`)
 
 ---
 
