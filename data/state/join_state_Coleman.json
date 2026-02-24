@@ -1,0 +1,10 @@
+{
+  "input_path": "data/raw/Sports_and_Outdoors_5.json",
+  "output_path": "data/processed/sports_outdoors_joined_Coleman.jsonl",
+  "brand": "Coleman",
+  "limit": null,
+  "offset": 1465533155,
+  "written": 31349,
+  "next_review_id": 31349,
+  "updated_at_unix": 1771953577.4305642
+}
