@@ -1,8 +1,11 @@
+# Sprint 1
+
 # Project Overview
 
 In this project, our team is building a structured corpus from Amazon v2 (Sports_and_Outdoors category).  
 
 The goal of Sprint 1 is to:
+
 1. Set up a properly structured GitHub repository
 2. Define a teamwork contract
 3. Propose our corpus design
@@ -38,9 +41,7 @@ project-root/
 
 # Teamwork Contract
 
-Our teamwork contract is documented in:
-
-- `documentation/team_contract.md`
+Our teamwork contract is documented in: `documentation/team_contract.md`
 
 It outlines:
 - Work distribution and task sequencing
@@ -56,9 +57,7 @@ Each team member has also included a self-reflection and skill ranking.
 
 # Corpus Proposal
 
-Our proposal is documented in: 
-
-- `documentation/project_proposal.md`
+Our proposal is documented in: `documentation/project_proposal.md`
 
 ## Data Source
 Amazon Review Data (2018), Sports & Outdoors category.
@@ -70,12 +69,15 @@ This corpus supports attribute-level sentiment analysis of product reviews.
 Instead of labeling entire reviews, we annotate text spans that express opinions about specific product attributes (e.g., durability, ease of setup, comfort), together with sentiment polarity (positive / negative / neutral).
 
 The dataset contains:
+
 - ~31,000 English reviews
 - Product-level metadata (brand, category, price, etc.)
 - Span-level attribute–sentiment annotations
 
 ## Purpose
+
 The corpus is designed to:
+
 - Enable attribute-level product quality analysis
 - Support downstream modeling of attribute–sentiment extraction
 - Provide a browser interface for non-expert exploration and annotation
@@ -84,11 +86,10 @@ The corpus is designed to:
 
 # Corpus Collection POC
 
-To demonstrate that we can collect and construct the proposed corpus, we implemented: 
-
-- `src/poc_download_and_join.py`
+To demonstrate that we can collect and construct the proposed corpus, we implemented: `src/poc_download_and_join.py`
 
 It demonstrates a fully reproducible pipeline:
+
 - downloads the **Sports_and_Outdoors** reviews (5-core) and metadata files,
 - decompresses the `.json.gz` files,
 - filters product metadata by brand (e.g., `brand == "Coleman"`),
@@ -128,6 +129,7 @@ For demonstration and grading purposes, the limited mode above is recommended.
 ## Outputs
 
 After running, the script creates:
+
 - data/raw/Sports_and_Outdoors_5.json.gz
 - data/raw/meta_Sports_and_Outdoors.json.gz
 - data/raw/Sports_and_Outdoors_5.json
@@ -137,10 +139,12 @@ After running, the script creates:
 Each line in the JSONL file is a joined record created by matching the review file and metadata file on `asin`.
 
 We keep a **selected subset of fields** from each source:
+
 - Review fields: `asin`, `overall`, `reviewText`
 - Metadata fields: `asin`, `title`, `price`, `description`, `rank`, `imageURL`, `cat_l1`–`cat_l5`
 
 We assign a **deterministic primary key** to each joined review record:
+
 - Primary key: `review_id` (assigned sequentially during streaming)
 
 ### Example Record
@@ -175,10 +179,10 @@ Therefore, both datasets are necessary and complementary.
 
 # Step-by-Step Algorithm
 
-The full corpus construction algorithm is documented in:
-- `documentation/step-by-step_algorithm.md`
+The full corpus construction algorithm is documented in: `documentation/step-by-step_algorithm.md`
 
 It covers the end-to-end pipeline implemented in `src/poc_download_and_join.py`, including:
+
 - Programmatic download of reviews + metadata
 - POC-size control via `--limit`
 - Metadata parsing and in-memory indexing by `asin`
@@ -189,8 +193,171 @@ It covers the end-to-end pipeline implemented in `src/poc_download_and_join.py`,
 # Sprint Completion
 
 All Sprint 1 deliverables have been completed:
+
 - Repository setup
 - Teamwork contract
 - Corpus proposal
 - Working corpus collection POC
 - Clear documentation and runnable script
+
+---
+
+# Sprint 2
+
+# Project Overview
+
+In Sprint 2, the goal is to:
+
+- Complete the collection of a large, domain-appropriate corpus.
+- Ensure the corpus is reproducible and properly documented.
+- Prepare for the annotation phase (Sprint 3).
+- Draft the annotation plan and annotation schema.
+- Provide a small processed subset ready for annotation.
+- Optionally conduct preliminary corpus analysis.
+
+## This sprint delivers:
+
+- A fully reproducible corpus construction pipeline.
+- A large unannotated corpus (≥ 1000 instances).
+- Documentation about corpus format, size, and potential issues.
+- A detailed annotation plan.
+- An initial annotation schema.
+- A small processed subset (≥ 10 examples) prepared for annotation.
+- A plan for annotation overlap and inter-annotator agreement (IAA).
+
+---
+
+# Repo and Data Storage
+
+## Repository Structure
+
+```
+project-root/
+├── README.md
+├── src/
+│   ├── poc_download_and_join.py
+│   └── corpus_pipeline.py
+├── data/
+│   ├── raw/        (ignored via .gitignore)
+│   ├── processed/
+│       ├── sports_outdoors_joined.jsonl
+│       └── sports_outdoors_joined_Coleman.jsonl
+│   └── state/
+│       └──join_state_Coleman.json
+└── documentation/
+    ├── step-by-step_algorithm.md
+    ├── team_contract.md
+    └── project_proposal.md
+```
+
+## Data Storage Policy
+
+The processed corpus file: `data/processed/sports_outdoors_joined_Coleman.jsonl`
+
+
+- Size: **56.9 MB**
+- Format: JSONL
+- Stored directly in this repository (below GitHub’s 100MB limit)
+
+Since the file is under 100MB, it is safely committed to GitHub and does not require external storage.
+
+However, The original Amazon raw dumps (`data/raw/`) are **not committed** due to their large size. These directories are excluded via `.gitignore`.
+
+---
+
+# Corpus Collection Code
+
+The corpus is built using: `src/corpus_pipeline.py`
+
+## How to Run the Code
+
+### Build Full Corpus
+
+```bash
+python src/corpus_pipeline.py --brand Coleman --resume
+```
+
+### Build a Smaller Test Corpus
+
+```bash
+python src/corpus_pipeline.py --brand Coleman --limit 1000 --resume
+```
+
+## Stop-and-Restart Support
+
+The script supports safe interruption and restart.
+
+### How Resume Works
+
+- Download and extraction steps are idempotent.
+- The join step uses checkpointing.
+- A checkpoint file is stored at: 
+`data/state/join_state_<Brand>.json`
+
+It stores:
+
+- Byte offset in the decompressed reviews `.json`
+- Number of records already written
+- Next `review_id`
+
+### How to Test Resume
+
+1. Run:
+
+```bash
+python src/corpus_pipeline.py --brand Coleman --resume
+```
+
+2. Interrupt during execution (Ctrl + C)
+3. Run again:
+
+```bash
+python src/corpus_pipeline.py --brand Coleman --resume
+```
+
+The script will resume from the last checkpoint without:
+
+- Re-downloading files
+- Re-extracting files
+- Reprocessing completed data
+- Losing already written records
+
+
+## Reset and Rebuild
+
+To rebuild from scratch:
+
+```bash
+python src/corpus_pipeline.py --brand Coleman --reset
+```
+
+This deletes:
+
+- The output JSONL file
+- The checkpoint file
+
+## Output Format
+
+The output file: `data/processed sports_outdoors_joined_<Brand>.jsonl`
+
+Each line is a JSON object:
+
+```json
+{
+  "review_id": 0,
+  "asin": "...",
+  "overall": 5,
+  "reviewText": "...",
+  "title": "...",
+  "price": "...",
+  "description": "...",
+  "rank": "...",
+  "imageURL": [...],
+  "cat_l1": "...",
+  "cat_l2": "...",
+  "cat_l3": "...",
+  "cat_l4": "...",
+  "cat_l5": "..."
+}
+```
+---
