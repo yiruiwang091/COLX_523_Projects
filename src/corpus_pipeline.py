@@ -114,7 +114,9 @@ def download(url: str, dest: Path, timeout: int = 60) -> None:
                 if now - last >= 0.25:
                     if total_bytes:
                         pct = done * 100.0 / total_bytes
-                        sys.stdout.write(f"\r      {pct:6.2f}% ({done}/{total_bytes} bytes)")
+                        sys.stdout.write(
+                            f"\r      {pct:6.2f}% ({done}/{total_bytes} bytes)"
+                        )
                     else:
                         sys.stdout.write(f"\r      {done} bytes")
                     sys.stdout.flush()
@@ -368,6 +370,9 @@ def join_to_jsonl_with_resume(
     Stream reviews (from decompressed .json), join on asin (only for asins in asin_set),
     keep only non-empty reviewText, and write JSONL.
 
+    IMPORTANT: Uses binary file IO for reviews_json to ensure byte-offset seek/tell works
+    reliably for resume checkpointing.
+
     limit:
         - None  -> build full corpus (no limit)
         - int   -> stop after writing that many joined records
@@ -408,7 +413,10 @@ def join_to_jsonl_with_resume(
             written = max(int(st.written), 0)
             review_id = max(int(st.next_review_id), 0)
             out_mode = "a"
-            print(f"[RES ] Resuming join from offset={start_offset}, written={written}, next_review_id={review_id}")
+            print(
+                f"[RES ] Resuming join from offset={start_offset}, "
+                f"written={written}, next_review_id={review_id}"
+            )
         else:
             print("[WARN] Checkpoint mismatch (paths/brand/limit). Starting from scratch.")
 
@@ -417,7 +425,8 @@ def join_to_jsonl_with_resume(
         print(f"[SKIP] Output already has written={written} >= limit={limit}. Nothing to do.")
         return
 
-    with reviews_json.open("r", encoding="utf-8", errors="replace") as fin, out_jsonl.open(out_mode, encoding="utf-8") as fout:
+    # Binary reading ensures byte offset resume works and fin.tell() is always valid.
+    with reviews_json.open("rb") as fin, out_jsonl.open(out_mode, encoding="utf-8") as fout:
         # Seek to checkpoint offset if needed
         if start_offset > 0:
             fin.seek(start_offset)
@@ -426,14 +435,18 @@ def join_to_jsonl_with_resume(
         last_ckpt_written = written
 
         try:
-            for line in fin:
-                scanned += 1
-
+            while True:
                 # Stop condition (only if limit is set)
                 if limit is not None and written >= limit:
                     break
 
-                line = line.strip()
+                line_b = fin.readline()
+                if not line_b:
+                    break  # EOF
+
+                scanned += 1
+
+                line = line_b.decode("utf-8", errors="replace").strip()
                 if not line:
                     continue
 
