@@ -1,0 +1,107 @@
+{
+  "stats": {
+    "name": "coleman_reviews",
+    "n_docs": 31349,
+    "n_tokens": 1741632,
+    "n_types": 21539,
+    "avg_word_len": 4.067886327306802,
+    "avg_doc_len_tokens": 55.55622188905547,
+    "median_doc_len_tokens": 28.0,
+    "ttr_fixed_n": 0.1755
+  },
+  "extra": {
+    "rating_counts": {
+      "5": 20122,
+      "2": 1144,
+      "4": 6114,
+      "1": 1439,
+      "3": 2530
+    },
+    "cat_l5_top20": [
+      [
+        "Tents",
+        4444
+      ],
+      [
+        "Stoves & Grills",
+        3726
+      ],
+      [
+        "Coolers",
+        3680
+      ],
+      [
+        "Lanterns",
+        1761
+      ],
+      [
+        "Sleeping Bags",
+        1484
+      ],
+      [
+        "Tent Accessories",
+        1222
+      ],
+      [
+        "Cots & Hammocks",
+        955
+      ],
+      [
+        "Chairs",
+        944
+      ],
+      [
+        "Lantern Accessories",
+        695
+      ],
+      [
+        "Axes & Hatchets",
+        676
+      ],
+      [
+        "Camping Shelters",
+        674
+      ],
+      [
+        "Camping Cookware",
+        658
+      ],
+      [
+        "Air Mattresses",
+        645
+      ],
+      [
+        "Stove Accessories",
+        612
+      ],
+      [
+        "Dishes & Utensils",
+        442
+      ],
+      [
+        "Sleeping Pads",
+        332
+      ],
+      [
+        "Insect Repellent",
+        308
+      ],
+      [
+        "Cooking Utensils",
+        256
+      ],
+      [
+        "Showers",
+        225
+      ],
+      [
+        "Cooler Accessories",
+        223
+      ]
+    ],
+    "missing_cat_l5": 5919,
+    "ttr_n": 10000,
+    "include_title_desc": false,
+    "limit_docs": null
+  }
+}
