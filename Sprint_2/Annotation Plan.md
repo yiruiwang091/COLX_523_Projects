@@ -84,7 +84,7 @@ Annotation will be conducted at two interconnected levels:
 ### **Label Categories**
 
 **Attribute Labels (Open-Ended):**
-Attribute categories are not restricted to a predefined closed list. Annotators may introduce new attribute types as needed to ensure comprehensive coverage of product characteristics. Later-stage clustering may be applied to consolidate semantically similar attributes.
+Attribute categories are not restricted to a predefined closed list. Annotators may introduce new attribute types as needed to ensure comprehensive coverage of product characteristics. Later-stage clustering may be applied to consolidate semantically similar attributes. For example, attributes may include material quality, comfort, design style, or battery life, and should be based on semantic meaning rather than strict category rules.
 
 **Sentiment Polarity Labels:**
 
