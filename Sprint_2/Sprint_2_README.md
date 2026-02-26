@@ -308,7 +308,7 @@ An optional JSON array version is eported for Label Studio compatibility.
 Despite these limitations, the corpus is large, domain-consistent, and suitable for downstream annotation and sentiment analysis tasks.
 
 ---
-### Annotation Plan
+# Annotation Plan
 
 The annotation workflow, label definitions, overlap strategy, and quality control process are described in:
 
@@ -318,7 +318,7 @@ We annotate **attribute mentions (span-level)** and assign **sentiment polarity 
 
 ---
 
-### Annotation Guidelines
+# Annotation Guidelines
 
 The detailed annotation guidelines, including:
 
@@ -335,7 +335,7 @@ are documented in:
 
 ---
 
-### Prepared Annotation Input (10 Examples)
+## Prepared Annotation Input (10 Examples)
 
 To satisfy the Sprint 2 requirement of providing preprocessed annotation-ready examples, we generated a small sample (n=10) from the full corpus.
 
@@ -347,7 +347,7 @@ To satisfy the Sprint 2 requirement of providing preprocessed annotation-ready e
 
 ---
 
-### Script for Generating Annotation Input
+## Script for Generating Annotation Input
 
 The 10 examples were generated using:
 
