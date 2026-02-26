@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Sprint 2 Project Overview
 
 In Sprint 2, the goal is to:
@@ -301,3 +306,70 @@ An optional JSON array version is eported for Label Studio compatibility.
 -   Reviews are limited to the 5-core subset (minimum 5 reviews per product).
 
 Despite these limitations, the corpus is large, domain-consistent, and suitable for downstream annotation and sentiment analysis tasks.
+
+---
+# Annotation Plan
+
+The annotation workflow, label definitions, overlap strategy, and quality control process are described in:
+
+* `Sprint_2/Annotation_Plan.md`
+
+We annotate **attribute mentions (span-level)** and assign **sentiment polarity (positive / negative / neutral / unknown)** to mentions that occur in review text.
+
+---
+
+# Annotation Guidelines
+
+The detailed annotation guidelines, including:
+
+* task description
+* span selection rules
+* attribute labeling rules (open-ended taxonomy)
+* sentiment labeling rules
+* boundary decisions
+* worked examples (based on the 10 prepared items)
+
+are documented in:
+
+* `Sprint_2/documentation/annotation_guidelines.md`
+
+---
+
+## Prepared Annotation Input (10 Examples)
+
+To satisfy the Sprint 2 requirement of providing preprocessed annotation-ready examples, we generated a small sample (n=10) from the full corpus.
+
+* Label Studio input JSON:
+  `Sprint_2/data/annotation_inputs/annotation_input_10_labelstudio.json`
+
+* CSV (human-readable version):
+  `Sprint_2/data/annotation_inputs/annotation_input_10.csv`
+
+---
+
+## Script for Generating Annotation Input
+
+The 10 examples were generated using:
+
+```
+Sprint_2/src/make_annotation_input.py
+```
+
+Example command:
+
+```bash
+python Sprint_2/src/make_annotation_input.py \
+  --input Sprint_2/data/processed/sports_outdoors_joined_Coleman.json \
+  --n 10 --seed 123 \
+  --out-json Sprint_2/data/annotation_inputs/annotation_input_10_labelstudio.json \
+  --out-csv  Sprint_2/data/annotation_inputs/annotation_input_10.csv \
+  --stratify-by-rating
+```
+
+This script:
+
+* samples records from the full corpus (optionally stratified by rating),
+* reformats them into Label Studio task format,
+* exports both JSON (annotation-ready) and CSV (inspection-friendly),
+* ensures reproducibility via fixed random seed.
+
