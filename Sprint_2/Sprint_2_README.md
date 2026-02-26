@@ -1,8 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
 # Sprint 2 Project Overview
 
 In Sprint 2, the goal is to:
@@ -27,9 +22,9 @@ In Sprint 2, the goal is to:
 
 ------------------------------------------------------------------------
 
-# Repo and Data Storage
+# 1. Repo and Data Storage
 
-## Repository Structure
+## 1.1 Repository Structure
 
 ```         
 project-root/
@@ -37,22 +32,33 @@ project-root/
 └── Sprint_2/
     ├── Sprint_2_README.md
     ├── src/
-    │   └── corpus_pipeline.py
-    |   └── corpus_stats.py
+    │   ├── corpus_analysis.py
+    │   ├── corpus_pipeline.py
+    │   ├── corpus_stats.py
+    |   └── make_annotation_input.py
     ├── data/
     │   ├── raw/        (ignored via .gitignore)
+    │   ├── annotation_inputs/
+    │   │   ├── annotation_input_10_labelstudio.json
+    │   │   └── annotation_input_10.csv
+    │   ├── corpus_analysis_outputs/
+    │   │   ├── corpus_comparison_stats.csv
+    │   │   ├── our_corpus_stats.json
+    │   │   ├── rating_distribution.csv
+    │   │   ├── rating_length_correlation.txt
+    │   │   └── review_length_by_rating.csv
     │   ├── processed/
+    │   │   ├── sports_outdoors_joined_Coleman.json
     │   │   └── sports_outdoors_joined_Coleman.jsonl
     │   └── state/
     │       └── join_state_Coleman.json
     └── documentation/
-        ├── corpus_readme.md
-        ├── separate.md
+        ├── corpus_analysis.md
         ├── annotation_plan.md
         └── annotation_guidelines.md
 ```
 
-## Data Storage Policy
+## 1.2 Data Storage Policy
 
 ### Processed Corpus
 
@@ -80,7 +86,7 @@ They include:
 
 ------------------------------------------------------------------------
 
-# Corpus Construction Code
+# 2. Corpus Construction Code
 
 The corpus is built using: `Sprint_2/src/corpus_pipeline.py`
 
@@ -95,7 +101,7 @@ This script performs the following steps:
 7.  Write the merged corpus in JSONL format.
 8.  Optionally export JSONL → JSON array for Label Studio.
 
-## How to Run the Code
+## 2.1 How to Run the Code
 
 ### Build Full Corpus
 
@@ -129,7 +135,7 @@ This deletes:
 
 Then rebuilds the corpus from scratch.
 
-## Stop-and-Restart (Resume) Support
+## 2.2 Stop-and-Restart (Resume) Support
 
 The script supports safe interruption and restart.
 
@@ -175,7 +181,7 @@ The script will resume from the last checkpoint without:
 -   Reprocessing completed data
 -   Losing already written records
 
-## Output Format
+## 2.3 Output Format
 
 Primary output file: `Sprint_2/data/processed/sports_outdoors_joined_<Brand>.jsonl`
 
@@ -200,7 +206,7 @@ Each line is a JSON object:
 }
 ```
 
-## Label Studio Export
+## 2.4 Label Studio Export
 
 If `--export-json` is enabled:
 
@@ -214,7 +220,7 @@ The conversion:
 -   Writes atomically to prevent corruption
 -   Preserves UTF-8 encoding
 
-## Reproducibility
+## 2.5 Reproducibility
 
 The corpus can be rebuilt entirely from scratch using:
 
@@ -232,9 +238,9 @@ Reproducibility is ensured through:
 
 ------------------------------------------------------------------------
 
-# Corpus Description – Sports & Outdoors (Coleman Subset)
+# 3. Corpus Description
 
-## Domain Appropriateness
+## 3.1 Domain Appropriateness
 
 The corpus consists of Amazon product reviews from the *Sports & Outdoors* category, filtered by the brand **Coleman**.
 
@@ -246,7 +252,7 @@ Product reviews are highly suitable for sentiment analysis and opinion mining ta
 
 This avoids the issue described in the rubric (e.g., journal articles producing mostly neutral sentiment).
 
-# Corpus Statistics
+## 3.2 Corpus Statistics
 
 To compute corpus statistics (number of documents, token count, rating distribution), run:
 
@@ -255,17 +261,17 @@ cd Sprint_2
 python src/corpus_stats.py --input data/processed/sports_outdoors_joined_Coleman.json
 ```
 
-## Corpus Size
+### Corpus Size
 
 Using `corpus_stats.py`, we computed the following statistics:
 
--   **Total documents (reviews):** 31,349\
--   **Unique products (ASINs):** 543\
+-   **Total documents (reviews):** 31,349
+-   **Unique products (ASINs):** 543
 -   **Total tokens (whitespace-based):** 1,726,718
 
 This corpus significantly exceeds the minimum requirement of 1,000 instances.
 
-## Rating Distribution
+### Rating Distribution
 
 The distribution of ratings is:
 
@@ -278,9 +284,9 @@ The distribution of ratings is:
 The corpus is positively skewed, which is common in product review datasets.\
 This skew will be considered during annotation and modeling phases.
 
-## Data Format
+### Data Format
 
-Primary storage format: **JSONL**
+Primary storage format: **JSON**
 
 Each line contains a single review object with metadata and product information.
 
@@ -298,7 +304,7 @@ Fields include:
 
 An optional JSON array version is eported for Label Studio compatibility.
 
-## Known Issues and Limitations
+### Known Issues and Limitations
 
 -   Class imbalance toward 5-star reviews.
 -   Possible minor noise (formatting artifacts, short reviews).
@@ -307,18 +313,26 @@ An optional JSON array version is eported for Label Studio compatibility.
 
 Despite these limitations, the corpus is large, domain-consistent, and suitable for downstream annotation and sentiment analysis tasks.
 
----
-# Annotation Plan
+------------------------------------------------------------------------
 
-The annotation workflow, label definitions, overlap strategy, and quality control process are described in:
+# 4. Corpus Analysis
 
-* `Sprint_2/Annotation_Plan.md`
+***Need to be updated***
+
+
+
+
+------------------------------------------------------------------------
+
+# 5. Annotation Plan
+
+The annotation workflow, label definitions, overlap strategy, and quality control process are described in: `Sprint_2/Annotation_Plan.md`
 
 We annotate **attribute mentions (span-level)** and assign **sentiment polarity (positive / negative / neutral / unknown)** to mentions that occur in review text.
 
----
+------------------------------------------------------------------------
 
-# Annotation Guidelines
+# 6. Annotation Guidelines
 
 The detailed annotation guidelines, including:
 
@@ -329,13 +343,9 @@ The detailed annotation guidelines, including:
 * boundary decisions
 * worked examples (based on the 10 prepared items)
 
-are documented in:
+are documented in: `Sprint_2/documentation/annotation_guidelines.md`
 
-* `Sprint_2/documentation/annotation_guidelines.md`
-
----
-
-## Prepared Annotation Input (10 Examples)
+## 6.1 Prepared Annotation Input (10 Examples)
 
 To satisfy the Sprint 2 requirement of providing preprocessed annotation-ready examples, we generated a small sample (n=10) from the full corpus.
 
@@ -345,15 +355,9 @@ To satisfy the Sprint 2 requirement of providing preprocessed annotation-ready e
 * CSV (human-readable version):
   `Sprint_2/data/annotation_inputs/annotation_input_10.csv`
 
----
+## 6.2 Script for Generating Annotation Input
 
-## Script for Generating Annotation Input
-
-The 10 examples were generated using:
-
-```
-Sprint_2/src/make_annotation_input.py
-```
+The 10 examples were generated using: `Sprint_2/src/make_annotation_input.py`
 
 Example command:
 
@@ -373,3 +377,46 @@ This script:
 * exports both JSON (annotation-ready) and CSV (inspection-friendly),
 * ensures reproducibility via fixed random seed.
 
+# 7. Team Report
+
+## 7.1 Contribution Summary
+
+During Sprint 2, the team collaborated on corpus construction, documentation, and preparation for the annotation phase.
+
+### **Wei (the scrum leader this week)**
+  - Designed and implemented the reproducible corpus construction pipeline, including brand filtering and review–metadata joining
+  - Implemented resume-safe checkpointing and JSON export for Label Studio compatibility
+  - Structured the Sprint_2 repository and defined data storage and reproducibility policies
+
+
+### **Yirui**  
+  - Conducted corpus statistics analysis, including document counts, token counts, and rating distribution
+  - Interpreted corpus characteristics and identified class imbalance and data limitations
+  - Documented corpus domain suitability and data format details  
+  
+### **Freya**  
+  - Contributed to corpus analysis and interpretation of statistical outputs
+  - Reviewed and refined annotation guidelines, including span and labeling rules
+  - Ensured clarity and consistency in documentation for annotation procedures
+
+### **Leah**  
+  - Drafted the annotation plan, including workflow and task design
+  - Developed the attribute-level annotation schema and sentiment labeling structure
+  - Defined overlap strategy and inter-annotator agreement (IAA) planning 
+
+All major design decisions were discussed collaboratively.  
+Pull requests were reviewed by team members prior to merging to ensure correctness and transparency.
+
+## 7.2 Code Review Process
+
+To ensure correctness, reproducibility, and documentation clarity, we adopted a structured peer review workflow during Sprint 2. Each major section and corresponding code contribution was reviewed by a different team member before merging.
+
+- **Wei reviewed Freya’s work** (Corpus Analysis & Annotation Guidelines), focusing on technical consistency, clarity of definitions, and alignment with the constructed corpus structure.
+
+- **Yirui reviewed Wei’s work** (Corpus Construction Pipeline & Repository Structure), verifying reproducibility, checkpoint logic, data integrity, and compliance with project requirements.
+
+- **Leah reviewed Yirui’s work** (Corpus Description & Statistics), ensuring statistical interpretation accuracy and clarity of documentation.
+
+- **Freya reviewed Leah’s work** (Annotation Plan), checking logical coherence, labeling consistency, and feasibility of the overlap and IAA strategy.
+
+All pull requests were reviewed prior to merging. Feedback was addressed before approval, ensuring transparency, correctness, and collaborative quality control throughout the sprint.
