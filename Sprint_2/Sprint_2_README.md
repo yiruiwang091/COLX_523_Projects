@@ -315,12 +315,39 @@ Despite these limitations, the corpus is large, domain-consistent, and suitable 
 
 ------------------------------------------------------------------------
 
-# 4. Corpus Analysis
+# 4. Corpus Analysis (Optional Sprint 2 bonus)
 
-***Need to be updated***
+COLX521 -style analyses:
+- Simple stats (avg word length, avg doc length, etc.)
+- Type-token ratio (TTR) at a fixed token budget (10k)
+- Compare our corpus vs NLTK corpora (treebank, reuters, webtext, movie_reviews, brown)
+- Metadata interactions: rating distribution; review length by rating; rating-length correlation.
 
+are documented in: `Sprint_2/documentation/corpus_analysis.md`
 
+The code to carry out this analysis: `Sprint_2/src/corpus_analysis.py`
 
+Example command:
+```
+  python Sprint_2/src/corpus_analysis.py \
+    --input Sprint_2/data/processed/sports_outdoors_joined_Coleman.json \
+    --outdir Sprint_2/documentation/corpus_analysis_outputs \
+    --ttr-n 10000
+```
+
+Outputs:
+- JSON summary: our_corpus_stats.json
+- CSV: corpus_comparison_stats.csv
+- CSV: rating_distribution.csv
+- CSV: review_length_by_rating.csv
+- TXT: rating_length_correlation.txt
+
+## Summary of key takeaways
+
+1. **Corpus size is robust** (31k docs, 1.74M tokens), meeting “large corpus” expectations.
+2. **Lexical diversity is moderate** (TTR ≈ 0.176), consistent with domain-specific reviews.
+3. **Ratings are heavily skewed positive**, so annotation should intentionally include more low-star reviews to avoid label imbalance.
+4. **Lower ratings correlate with longer reviews**, meaning negative reviews may supply richer multi-attribute evidence.
 
 ------------------------------------------------------------------------
 
@@ -395,9 +422,9 @@ During Sprint 2, the team collaborated on corpus construction, documentation, an
   - Documented corpus domain suitability and data format details  
   
 ### **Freya**  
-  - Contributed to corpus analysis and interpretation of statistical outputs
-  - Reviewed and refined annotation guidelines, including span and labeling rules
-  - Ensured clarity and consistency in documentation for annotation procedures
+  - Conducted (4) corpus analysis, including corpus stats, corpora comparisons, and metadata interactions
+  - Developed (6) annotation guidelines, including span selection and labeling rules, 10 worked examples, and a script to generate annotation input for Label Studio (JSON) and human inspection (CSV)
+  - Contributed to maintaining clarity and consistency in repo documentation
 
 ### **Leah**  
   - Drafted the annotation plan, including workflow and task design
