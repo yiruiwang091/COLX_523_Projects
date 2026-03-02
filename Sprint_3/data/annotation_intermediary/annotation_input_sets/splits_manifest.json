@@ -1,0 +1,62 @@
+{
+  "seed": 523,
+  "total_unique": 1000,
+  "pair1": {
+    "people": [
+      "yirui",
+      "wei"
+    ],
+    "unique": 500,
+    "set_size": 250
+  },
+  "pair2": {
+    "people": [
+      "leah",
+      "freya"
+    ],
+    "unique": 500,
+    "set_size": 250
+  },
+  "files": {
+    "yirui_round1": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/yirui_round1_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/yirui_round1.csv"
+    },
+    "yirui_round2": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/yirui_round2_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/yirui_round2.csv"
+    },
+    "wei_round1": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/wei_round1_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/wei_round1.csv"
+    },
+    "wei_round2": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/wei_round2_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/wei_round2.csv"
+    },
+    "leah_round1": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/leah_round1_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/leah_round1.csv"
+    },
+    "leah_round2": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/leah_round2_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/leah_round2.csv"
+    },
+    "freya_round1": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/freya_round1_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/freya_round1.csv"
+    },
+    "freya_round2": {
+      "n": 250,
+      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/freya_round2_labelstudio.json",
+      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/freya_round2.csv"
+    }
+  }
+}
