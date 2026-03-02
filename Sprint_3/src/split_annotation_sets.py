@@ -11,7 +11,7 @@ Design:
 => Every sample gets 2 passes (100% overlap).
 
 
-usage:
+Usage:
 python Sprint_3/src/split_annotation_sets.py \
   --master-json Sprint_3/data/annotation_intermediary/master_1000_labelstudio.json \
   --out-dir     Sprint_3/data/annotation_intermediary/annotation_input_sets \
@@ -154,14 +154,6 @@ def main() -> None:
             write_labelstudio_json(subset, json_path)
             write_csv(subset, csv_path)
             manifest["files"][base] = {"n": len(subset), "json": str(json_path), "csv": str(csv_path)}
-
-    # Optional bookkeeping: the underlying unique sets A/B per pair
-    for name, subset in {"pair1_A": p1_A, "pair1_B": p1_B, "pair2_A": p2_A, "pair2_B": p2_B}.items():
-        json_path = out_dir / f"{name}_labelstudio.json"
-        csv_path = out_dir / f"{name}.csv"
-        write_labelstudio_json(subset, json_path)
-        write_csv(subset, csv_path)
-        manifest["files"][name] = {"n": len(subset), "json": str(json_path), "csv": str(csv_path)}
 
     (out_dir / "splits_manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2),

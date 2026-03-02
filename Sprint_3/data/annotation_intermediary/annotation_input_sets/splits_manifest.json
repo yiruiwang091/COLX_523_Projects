@@ -57,26 +57,6 @@
       "n": 250,
       "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/freya_round2_labelstudio.json",
       "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/freya_round2.csv"
-    },
-    "pair1_A": {
-      "n": 250,
-      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair1_A_labelstudio.json",
-      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair1_A.csv"
-    },
-    "pair1_B": {
-      "n": 250,
-      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair1_B_labelstudio.json",
-      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair1_B.csv"
-    },
-    "pair2_A": {
-      "n": 250,
-      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair2_A_labelstudio.json",
-      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair2_A.csv"
-    },
-    "pair2_B": {
-      "n": 250,
-      "json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair2_B_labelstudio.json",
-      "csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair2_B.csv"
     }
   }
 }
