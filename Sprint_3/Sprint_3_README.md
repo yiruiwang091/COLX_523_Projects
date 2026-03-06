@@ -129,9 +129,111 @@ python Sprint_3/src/adjudication.py \
 
 xx
 
-## Plan for the interface
+---
 
-xx
+## Plan for the Interface
+
+### Purpose
+
+To support interactive exploration of the corpus and annotation results, we designed a lightweight web interface for corpus search and annotation inspection.
+
+The interface allows users to search the corpus and optionally access the adjudicated attribute annotations produced in Sprint 3.
+
+### Plan
+
+Users can submit keyword queries and choose which text field to search (title, description, review text, or all fields). 
+
+The interface also provides two annotation-related options:
+
+- **Annotated data only** – restrict results to documents that contain adjudicated annotations
+- **Include annotations in results** – display a compact summary of attribute annotations under each search result  
+
+Each result includes a **View Details** button that opens a document-level view showing the full document text together with its annotation records.
+
+The prototype interface follows a simple client–server architecture:
+
+- **Frontend:** HTML + JavaScript single-page interface
+- **Backend:** FastAPI service exposing `/api/search` and `/api/doc/{doc_id}` endpoints
+- **Search engine:** Whoosh index built from corpus fields (`title`, `description`, `reviewText`)  
+
+### Inputs
+
+The interface reads the processed corpus from: `data/processed/full_corpus.jsonl`
+
+Load adjudicated annotation outputs from:
+
+- `Sprint_3/data/annotation_final/annotated_pair1_adjudicated.json`
+- `Sprint_3/data/annotation_final/annotated_pair2_adjudicated.json`
+
+The backend implementation is organized into modular components located in: `Sprint_3/src/interface/`
+
+- `corpus_store.py` – loads corpus documents
+- `annotation_store.py` – loads adjudicated annotations
+- `search_service.py` – builds the Whoosh index and executes search queries
+- `app.py` – FastAPI application and API endpoints  
+
+A detailed interface design specification is provided in: `Sprint_3/documentation/interface_plan.md`
+
+### UI Mockup
+
+Example interface screenshots and UI mockups are included in: `Sprint_3/image/`
+
+### Running the Interface Prototype
+
+A working prototype of the corpus search interface has been implemented using **FastAPI**, **Whoosh**, and a simple **HTML/JavaScript frontend**.
+
+#### Step 1: Navigate to the interface directory
+
+From the project root, move to the interface source directory:
+
+```bash
+cd Sprint_3/src/interface
+```
+
+#### Step 2: Start the FastAPI server
+
+Run the following command:
+
+```bash
+uvicorn app:app --reload
+```
+
+This will start a local development server.
+
+#### Step 3: Open the interface in a browser
+
+After the server starts, open this address in a web browser.
+
+```text
+http://127.0.0.1:8000
+```
+
+#### Step 4: Use the interface
+
+The interface allows users to:
+
+- enter a keyword query
+- select the search field (All, Title, Description, or ReviewText)
+- optionally enable:
+  - Annotated data only
+  - Include annotations in results
+
+Search results will display ranked documents from the corpus.
+
+Click `View Details` to inspect the full document content and its associated annotations.
+
+> Notes
+
+The interface reads data from:
+
+- the processed corpus file
+`data/processed/full_corpus.jsonl`
+- the final adjudicated annotation outputs
+`Sprint_3/data/annotation_final/`
+
+The search index is automatically built from the corpus when the server starts.
+
+---
 
 ## Prompt completion
 
