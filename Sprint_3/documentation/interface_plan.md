@@ -35,8 +35,7 @@ Our interface treats the following files as upstream outputs.
 
 **Adjudication artifacts**
 
-- `Sprint_3/data/annotation_final/adjudication.ipynb`
-- `Sprint_3/data/annotation_final/adjudication_note.md`
+- `Sprint_3/documentation/adjudication_note.md`
 - `Sprint_3/src/adjudication.py` (pipeline script)
 
 > Note: The detailed annotation schema and adjudication rules are documented by teammates.  
