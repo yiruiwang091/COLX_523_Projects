@@ -2,7 +2,7 @@
 """
 Set up Label Studio projects for COLX523 Sprint 3 annotation.
 
-Creates one project per annotator pair:
+Creates one project per (person, round) combination:
   leah_round1, leah_round2, freya_round1, freya_round2,
   wei_round1,  wei_round2,  yirui_round1, yirui_round2
 
