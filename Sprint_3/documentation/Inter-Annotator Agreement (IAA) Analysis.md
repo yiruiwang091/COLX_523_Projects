@@ -9,13 +9,13 @@ For each `review_id`, annotations from two annotators were compared using span m
 ### Span Matching
 
 Each attribute mention is annotated as a **text span** with a start and end index. To determine whether two spans from different annotators refer to the same attribute mention, we used **Intersection over Union (IoU)** between spans:
-$$
-IoU = \frac{Intersection(span_1, span_2)}{Union(span_1, span_2)}
-$$
+
+IoU = Intersection(span_1, span_2)\Union(span_1, span_2)
+
  A pair of spans is considered a **match** if:
-$$
-IoU \geq 0.5
-$$
+
+IoU > 0.5
+
 This threshold allows small boundary differences while still capturing agreement on the same semantic span.
 
 Matched spans are used to compute **Precision**, **Recall**, and **F1 score**.
