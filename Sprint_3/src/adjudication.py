@@ -17,7 +17,6 @@ python Sprint_3/src/adjudication.py \
   --out-jsonl Sprint_3/data/annotation_final/annotated_pair2_adjudicated.jsonl \
   --out-log   Sprint_3/data/annotation_final/pair2_adjudication_conflicts.csv \
   --include-span-text
-
 """
 
 from __future__ import annotations
