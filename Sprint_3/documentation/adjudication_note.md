@@ -141,7 +141,3 @@ First, it preserves agreement directly whenever possible. If both annotators ind
 Second, it avoids unnecessary data loss. When only one annotator marked a span, the annotation is usually kept rather than discarded.
 
 Third, when disagreements occur, the script applies deterministic and interpretable rules that favor specificity, consistency, and informativeness. This makes the final dataset reproducible and suitable for downstream analysis, while still reflecting the kinds of disagreements that arose during human annotation.
-
-### 12. Summary
-
-In summary, the final adjudicated annotation for each review is produced by comparing the two annotators’ span-level annotations, preserving exact agreement, keeping one-sided spans, and resolving conflicts through fixed tie-breaking rules. Label conflicts are resolved by preferring non-generic, more frequent, and more specific labels, while sentiment conflicts are resolved by preferring defined and more informative sentiment values. Because all decisions are rule-based and logged, the adjudication process is fully reproducible and transparent.
