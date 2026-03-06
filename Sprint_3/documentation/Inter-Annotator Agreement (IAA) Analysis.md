@@ -31,21 +31,20 @@ Let:
 The metrics are computed as:
 
 **Precision**:
-$$
-precision = \frac{TP}{|A|}
-$$
+Precision = Matched spans / Predicted spans
+
 Measures how many spans annotated by annotator A are also identified by annotator B.
 
 **Recall**:
-$$
-Recall = \frac{TP}{|B|}
-$$
+
+Recall = Matched spans / Gold spans 
+
 Measures how many spans annotated by annotator B are also identified by annotator A.
 
 **F1 Score**:
-$$
-F1 = \frac{2\times Precision\times Recall}{Precision + Recall}
-$$
+
+F1 = 2 * Precision * Recall / (Precision + Recall) 
+
 F1 summarizes the overall span agreement between annotators.
 
 ### Label Agreement
@@ -53,9 +52,9 @@ F1 summarizes the overall span agreement between annotators.
 After identifying matched spans, we evaluate whether the **attribute labels assigned to the spans are the same**.
 
 Label agreement is computed as:
-$$
-LabelAgreement = \frac{\#\; of\; matched\; spans\; with\; identical\; labels}{Total\; matched\; spans}
-$$
+
+LabelAgreement = Matched spans with identical labels / Total matched spans
+
 This metric evaluates whether annotators agree not only on **where the attribute is mentioned**, but also **what attribute category it represents**.
 
 ## Results
