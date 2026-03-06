@@ -127,7 +127,9 @@ python Sprint_3/src/adjudication.py \
 
 ## Interannotator agreement study
 
-To measure the consistency between annotations, we conducted an inter-annotator agreement (IAA) analysis between two annotators: a human annotator and the AI system. Each item contains three annotation fields (title, review, and description), where spans corresponding to attribute mentions are annotated. For each item and each field, we compared the spans identified by the two annotators.
+To measure the consistency between annotations, we conducted an inter-annotator agreement (IAA) analysis between two annotators: a human annotator and the AI system. Each item contains three annotation fields (title, review, and description), where spans corresponding to attribute mentions are annotated. For each item and each field, we compared the spans identified by the two annotators. We take annotated data as input, and output the IAA score in predefined metrics.
+
+The file to reproduce IAA is at: `./Sprint_3/src/human_auto_ann.ipynb`. Detailed analysis of IAA is at `Inter-Annotator Agreement (IAA) Analysis.md`.
 
 A span was considered matched if the overlap between the two spans exceeded a predefined threshold based on span overlap (IoU > 0.5). Based on these matches, we computed precision, recall, and F1 score to measure the agreement between the two annotators. Precision measures how many AI spans match the human annotations, while recall measures how many human spans are successfully identified by the AI.
 
