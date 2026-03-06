@@ -21,15 +21,146 @@ This sprint delivers:
 * A final adjudicated annotation dataset for downstream modeling and analysis. 
 * A short interface plan and mockup for corpus search and annotated-data access. 
 
-## Repo and data storage
+# Repo and data storage
 
-xxx
+## Repository Structure
 
-## Annotation + explanation + code
+COLX523_Freya_Leah_Wei_Yirui/
+└── Sprint_3/
+    ├── src/
+    │   ├── split_annotation_sets.py
+    │   ├── label_studio_project_setup/
+    │   │   ├── start_annotation.sh
+    │   │   ├── setup_labelstudio.py
+    │   │   ├── preannotate.py
+    │   │   ├── ml_backend.py
+    │   │   ├── label_config.xml
+    │   │   ├── Dockerfile.ml
+    │   │   └── docker-compose.yml
+    │   ├── interface/
+    │   │   ├── templates/
+    │   │   ├── search_service.py
+    │   │   ├── index/
+    │   │   ├── corpus_store.py
+    │   │   ├── app.py
+    │   │   └── annotation_store.py
+    │   ├── human_auto_ann.ipynb
+    │   └── adjudication.py
+    ├── image/
+    │   ├── corpus_search.png
+    │   ├── corpus_detail.png
+    │   ├── annotation_search.png
+    │   └── annotation_detail.png
+    ├── documentation/
+    │   ├── ui_mockup.md
+    │   ├── interface_plan.md
+    │   ├── iaa_analysis.md
+    │   └── adjudication_note.md
+    ├── data/
+    │   ├── unannotated_corpus/
+    │   │   ├── full_corpus.jsonl
+    │   │   └── full_corpus.json
+    │   ├── annotation_intermediary/
+    │   │   ├── master_1000.csv
+    │   │   └── master_1000_labelstudio.json
+    │   ├── annotation_output_sets/
+    │   │   ├── attribute_glossary.csv
+    │   │   ├── annotated_pair2_raw.json
+    │   │   └── annotated_pair1_raw.json
+    │   ├── annotation_input_sets/
+    │   │   ├── splits_manifest.json
+    │   │   ├── pair2_leah_freya.csv
+    │   │   ├── pair2_leah_freya_labelstudio.json
+    │   │   ├── pair1_yirui_wei.csv
+    │   │   └── pair1_yirui_wei_labelstudio.json
+    │   └── annotation_final/
+    │       ├── pair2_adjudication_conflicts.csv
+    │       ├── pair1_adjudication_conflicts.csv
+    │       ├── annotated_pair2_adjudicated.jsonl
+    │       ├── annotated_pair2_adjudicated.json
+    │       ├── annotated_pair1_adjudicated.jsonl
+    │       └── annotated_pair1_adjudicated.json
+    └── Sprint_3_README.md
 
-### Step 1: Annotation input generation
+Absolutely — here is a more README-friendly point-form version for the **Repo and Data Storage** section, aligned with your current Sprint 3 README. 
 
-#### 1.1 Sample 1,000 unique reviews (master file)
+## Repo and Data Storage
+
+### Repository organization
+
+* `Sprint_3/` is organized by function so that code, documentation, images, and data artifacts are clearly separated.
+* `src/` contains all executable project code for:
+
+  * annotation input generation
+  * Label Studio setup
+  * auto-annotation backend
+  * adjudication
+  * interface prototype
+* `documentation/` contains written supporting materials, including:
+
+  * interface planning
+  * UI mockups
+  * IAA analysis
+  * adjudication notes
+* `image/` stores screenshots and interface visuals used for documentation.
+* `data/` stores all corpus and annotation-related files, organized by stage of the workflow.
+* `Sprint_3_README.md` documents the sprint goals, workflow, outputs, and reproducibility steps.
+
+### Data storage organization
+
+* `data/unannotated_corpus/`
+
+  * stores the original unannotated corpus used as the source for annotation
+  * includes both `.json` and `.jsonl` versions for convenience and compatibility
+
+* `data/annotation_intermediary/`
+
+  * stores intermediate files created before annotation
+  * includes the master 1,000-review sample used as the annotation pool
+  * keeps these files separate from raw and final annotation outputs
+
+* `data/annotation_input_sets/`
+
+  * stores the pair-specific annotation input files distributed to annotators
+  * includes both CSV files for inspection and Label Studio JSON files for annotation
+  * includes `splits_manifest.json` to document the assignment of reviews to annotator pairs
+
+* `data/annotation_output_sets/`
+
+  * stores the raw annotation exports returned from annotators
+  * preserves original annotation results before adjudication
+  * also includes the shared `attribute_glossary.csv` used to support label consistency
+
+* `data/annotation_final/`
+
+  * stores the final adjudicated annotation outputs
+  * includes both `.json` and `.jsonl` formats for downstream use
+  * includes conflict logs generated during adjudication for transparency and reproducibility
+
+### Rationale for this structure
+
+* Separating files by workflow stage makes it easy to distinguish:
+
+  * source corpus files
+  * intermediate working files
+  * annotator input files
+  * raw annotation outputs
+  * final adjudicated data
+* This structure supports:
+
+  * reproducibility
+  * easier debugging
+  * clearer team collaboration
+  * transparent tracking of how final annotations were produced
+* It also makes the repository easier to navigate for instructors, teammates, and future downstream modeling work.
+
+---
+
+# Annotation
+
+## Step 1: Annotation input generation
+
+### 1.1 Sample 1,000 unique reviews (master file)
 
 We use `Sprint_2/src/make_annotation_input.py` to sample from the processed corpus (`Sprint_2/data/processed/`) and output a Label Studio tasks JSON plus a human-readable CSV. The script supports `.jsonl` input and can stratify by star rating for balanced sets. 
 
@@ -49,7 +180,7 @@ python Sprint_2/src/make_annotation_input.py \
 * `Sprint_3/data/annotation_intermediary/master_1000_labelstudio.json` — Label Studio task file for the full 1,000 sampled reviews
 * `Sprint_3/data/annotation_intermediary/master_1000.csv` — inspection-friendly CSV ver.
 
-#### 1.2 Split into per annotator pair sets
+### 1.2 Split into per annotator pair sets
 
 We then split the master file using `Sprint_3/src/split_annotation_sets.py`. Our design uses **two annotator pairs**, where each pair processes 500 unique samples. Each annotator within a pair labels the same 500 samples, ensuring **every one of the 1,000 samples receives two passes (100% overlap)**. 
 
@@ -73,11 +204,11 @@ python Sprint_3/src/split_annotation_sets.py \
 * `Sprint_3/data/annotation_intermediary/annotation_input_sets/splits_manifest.json` — manifest documenting the split assignment
 
 
-### Step 2: Human annotation in Label Studio
+## Step 2: Human annotation in Label Studio
 
 Each pair then annotated its assigned 500-review set in Label Studio following the annotation guidelines in `Sprint_3/documentation/annotation_guidelines.md`. The annotation task is span-based, covering three text regions per item—title, description, and review text—and assigns open-ended attribute labels to minimal spans. For review-text spans only, annotators also assign sentiment labels (`positive`, `negative`, `neutral`, `unknown`).
 
-We set up Label Studio using a Docker container to provide a centralized annotation environment for the team. The container was deployed on a machine within the campus local network and exposed through the campus LAN, allowing multiple annotators to access the interface and collaborate simultaneously through their browsers. All annotation data were stored in the running Docker container, enabling real-time updates and ensuring that annotations from different team members were immediately synchronized and available for further analysis. To support automatic annotation, we wrapped the GPT-5 mini model in a FastAPI service and deployed it as a backend API running on a dedicated port. This service receives text inputs from the annotation platform and returns predicted spans for attribute mentions. By connecting this API endpoint to Label Studio, we enabled the platform’s auto-annotation functionality, allowing the model to generate real-time annotation suggestions that annotators could review and modify during the labeling process. All files including server and docker definition and command are store in `./COLX523_Freya_Leah_Wei_Yirui/Sprint_3/src`.
+We set up Label Studio using a Docker container to provide a centralized annotation environment for the team. The container was deployed on a machine within the campus local network and exposed through the campus LAN, allowing multiple annotators to access the interface and collaborate simultaneously through their browsers. All annotation data were stored in the running Docker container, enabling real-time updates and ensuring that annotations from different team members were immediately synchronized and available for further analysis. To support automatic annotation, we wrapped the GPT-5 mini model in a FastAPI service and deployed it as a backend API running on a dedicated port. This service receives text inputs from the annotation platform and returns predicted spans for attribute mentions. By connecting this API endpoint to Label Studio, we enabled the platform’s auto-annotation functionality, allowing the model to generate real-time annotation suggestions that annotators could review and modify during the labeling process. All files including server and docker definition and command are store in `./COLX523_Freya_Leah_Wei_Yirui/Sprint_3/src/label_studio_project_setup`.
 
 These files are the direct products of the annotation process:
 
@@ -87,7 +218,7 @@ These files are the direct products of the annotation process:
 The raw pair exports still contain one annotation record per annotator per review. They are therefore not yet the final corpus annotation.
 
 
-#### Step 3: Adjudication: derive one best annotation per review
+## Step 3: Adjudication: derive one best annotation per review
 
 To convert the two raw annotations for each review into a single final annotation, we use `Sprint_3/src/adjudication.py`. The script takes one raw pair export at a time and produces a single adjudicated record per `review_id`. A detailed explanation of the script and our adjudication strategy is documented in `Sprint_3/documentation/adjudication_note.md`.
 
@@ -119,7 +250,7 @@ python Sprint_3/src/adjudication.py \
 * `Sprint_3/data/annotation_final/annotated_pair2_adjudicated.jsonl` — JSONL file of final annotations of another 500 reviews
 * `Sprint_3/data/annotation_final/pair2_adjudication_conflicts.csv` — CSV conflict log of another annotator pair
 
-### Discussion of the Annotation Process
+## Discussion of the Annotation Process
 
 - During annotation, we maintained a shared attribute glossary so that newly introduced labels could be reused consistently across annotators rather than drifting into synonyms or small naming variants. This helped keep the final attribute inventory to a manageable and desirable set of about 45 labels, even though the schema itself was open-ended and allowed new labels when needed. 
 
@@ -127,7 +258,9 @@ python Sprint_3/src/adjudication.py \
 
 - We encountered some one-sided spans and genuine disagreement cases, especially when one annotator chose a broader label and the other chose a more specific one for the same text. To handle these cases efficiently, consistently, and reproducibly, we used predefined adjudication rules implemented in code rather than manually editing the final files, and we retained conflict logs so that disagreement cases remained transparent and auditable.
 
-## Interannotator agreement study
+---
+
+# Interannotator agreement study
 
 To measure the consistency between annotations, we conducted an inter-annotator agreement (IAA) analysis between two annotators: a human annotator and the AI system. Each item contains three annotation fields (title, review, and description), where spans corresponding to attribute mentions are annotated. For each item and each field, we compared the spans identified by the two annotators. We take annotated data as input, and output the IAA score in predefined metrics.
 
@@ -139,15 +272,15 @@ Overall, the results show a moderate to strong level of agreement between the hu
 
 ---
 
-## Plan for the Interface
+# Plan for the Interface
 
-### Purpose
+## Purpose
 
 To support interactive exploration of the corpus and annotation results, we designed a lightweight web interface for corpus search and annotation inspection.
 
 The interface allows users to search the corpus and optionally access the adjudicated attribute annotations produced in Sprint 3.
 
-### Plan
+## Plan
 
 Users can submit keyword queries and choose which text field to search (title, description, review text, or all fields). 
 
@@ -164,7 +297,7 @@ The prototype interface follows a simple client–server architecture:
 - **Backend:** FastAPI service exposing `/api/search` and `/api/doc/{doc_id}` endpoints
 - **Search engine:** Whoosh index built from corpus fields (`title`, `description`, `reviewText`)  
 
-### Inputs
+## Inputs
 
 The interface reads the processed corpus from: `data/processed/full_corpus.jsonl`
 
@@ -182,15 +315,15 @@ The backend implementation is organized into modular components located in: `Spr
 
 A detailed interface design specification is provided in: `Sprint_3/documentation/interface_plan.md`
 
-### UI Mockup
+## UI Mockup
 
 Example interface screenshots and UI mockups are included in: `Sprint_3/image/`
 
-### Running the Interface Prototype
+## Running the Interface Prototype
 
 A working prototype of the corpus search interface has been implemented using **FastAPI**, **Whoosh**, and a simple **HTML/JavaScript frontend**.
 
-#### Step 1: Navigate to the interface directory
+### Step 1: Navigate to the interface directory
 
 From the project root, move to the interface source directory:
 
@@ -198,7 +331,7 @@ From the project root, move to the interface source directory:
 cd Sprint_3/src/interface
 ```
 
-#### Step 2: Start the FastAPI server
+### Step 2: Start the FastAPI server
 
 Run the following command:
 
@@ -208,7 +341,7 @@ uvicorn app:app --reload
 
 This will start a local development server.
 
-#### Step 3: Open the interface in a browser
+### Step 3: Open the interface in a browser
 
 After the server starts, open this address in a web browser.
 
@@ -216,7 +349,7 @@ After the server starts, open this address in a web browser.
 http://127.0.0.1:8000
 ```
 
-#### Step 4: Use the interface
+### Step 4: Use the interface
 
 The interface allows users to:
 
@@ -243,6 +376,6 @@ The search index is automatically built from the corpus when the server starts.
 
 ---
 
-## Prompt completion
+# Prompt completion
 
 xx
