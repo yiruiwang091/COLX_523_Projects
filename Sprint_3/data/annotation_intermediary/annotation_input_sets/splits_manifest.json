@@ -1,0 +1,23 @@
+{
+  "seed": 523,
+  "total_unique": 1000,
+  "per_pair_unique": 500,
+  "pair1": {
+    "people": [
+      "yirui",
+      "wei"
+    ],
+    "n": 500,
+    "out_json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair1_yirui_wei_labelstudio.json",
+    "out_csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair1_yirui_wei.csv"
+  },
+  "pair2": {
+    "people": [
+      "leah",
+      "freya"
+    ],
+    "n": 500,
+    "out_json": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair2_leah_freya_labelstudio.json",
+    "out_csv": "Sprint_3/data/annotation_intermediary/annotation_input_sets/pair2_leah_freya.csv"
+  }
+}

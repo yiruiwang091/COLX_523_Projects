@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker:*)",
+      "Bash(ip route get 8.8.8.8)",
+      "Bash(python3:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(ip addr:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(chmod +x:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(/mnt/c/Windows/System32/ipconfig.exe:*)",
+      "Bash(/mnt/c/Windows/System32/netsh.exe advfirewall:*)",
+      "Bash(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:*)",
+      "WebFetch(domain:206.87.233.174)",
+      "WebFetch(domain:labelstud.io)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(xargs:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}
