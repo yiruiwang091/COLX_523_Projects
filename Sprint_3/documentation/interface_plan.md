@@ -46,7 +46,7 @@ The interface reads the full corpus JSONL produced by our earlier corpus constru
 
 The corpus file is expected to be stored in:
 
-- `data/processed/full_corpus.jsonl`
+- `data/unannotated_corpus/full_corpus.jsonl`
 
 Each document contains a stable identifier (`review_id`) and text fields such as:
 
