@@ -354,7 +354,7 @@ All members collaborated on human annotation in Label Studio.
 ### **Yirui**  
   - Designed adjudication strategies to choose the single best annotation per review
   - Implemented code for adjudication to convert the raw annotation into the final annotation
-  - xx
+  - Cleaned and normalized exported annotation files and generated adjudicated JSON outputs with audit logs.
   
 ### **Freya (the scrum leader this week)**  
   - Implemented annotation input generation, documented the annotation process, and refined the code for adjudication
