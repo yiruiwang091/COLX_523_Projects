@@ -11,7 +11,7 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
-corpus = CorpusStore("../../data/processed/full_corpus.jsonl")
+corpus = CorpusStore("../../data/unannotated_corpus/full_corpus.jsonl")
 annotations = AnnotationStore("../../data/annotation_final")
 searcher = SearchService(corpus)
 
