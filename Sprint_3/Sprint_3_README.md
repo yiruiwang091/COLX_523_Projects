@@ -21,7 +21,7 @@ This sprint delivers:
 * A final adjudicated annotation dataset for downstream modeling and analysis. 
 * A short interface plan and mockup for corpus search and annotated-data access. 
 
-# Repo and data storage
+# Repo and Data Storage
 
 ```
 COLX523_Freya_Leah_Wei_Yirui/
@@ -90,7 +90,6 @@ COLX523_Freya_Leah_Wei_Yirui/
 * `src/` contains all executable project code for:
   * annotation input generation
   * Label Studio setup
-  * auto-annotation backend
   * adjudication
   * interface prototype
 * `documentation/` contains written supporting materials, including:
@@ -173,9 +172,9 @@ python Sprint_3/src/split_annotation_sets.py \
 
 ## Step 2: Human annotation in Label Studio
 
-Each pair then annotated its assigned 500-review set in Label Studio following the annotation guidelines in `Sprint_3/documentation/annotation_guidelines.md`. The annotation task is span-based, covering three text regions per item—title, description, and review text—and assigns open-ended attribute labels to minimal spans. For review-text spans only, annotators also assign sentiment labels (`positive`, `negative`, `neutral`, `unknown`).
+Each pair then annotated its assigned 500-review set in Label Studio following the annotation guidelines in `Sprint_2/documentation/annotation_guidelines.md`. The annotation task is span-based, covering three text regions per item—title, description, and review text—and assigns open-ended attribute labels to minimal spans. For review-text spans only, annotators also assign sentiment labels (`positive`, `negative`, `neutral`, `unknown`).
 
-We set up Label Studio using a Docker container to provide a centralized annotation environment for the team. The container was deployed on a machine within the campus local network and exposed through the campus LAN, allowing multiple annotators to access the interface and collaborate simultaneously through their browsers. All annotation data were stored in the running Docker container, enabling real-time updates and ensuring that annotations from different team members were immediately synchronized and available for further analysis. To support automatic annotation, we wrapped the GPT-5 mini model in a FastAPI service and deployed it as a backend API running on a dedicated port. This service receives text inputs from the annotation platform and returns predicted spans for attribute mentions. By connecting this API endpoint to Label Studio, we enabled the platform’s auto-annotation functionality, allowing the model to generate real-time annotation suggestions that annotators could review and modify during the labeling process. All files including server and docker definition and command are store in `./COLX523_Freya_Leah_Wei_Yirui/Sprint_3/src/label_studio_project_setup/`.
+We set up Label Studio using a Docker container to provide a centralized annotation environment for the team. The container was deployed on a machine within the campus local network and exposed through the campus LAN, allowing multiple annotators to access the interface and collaborate simultaneously through their browsers. All annotation data were stored in the running Docker container, enabling real-time updates and ensuring that annotations from different team members were immediately synchronized and available for further analysis. To support automatic annotation, we wrapped the GPT-5 mini model in a FastAPI service and deployed it as a backend API running on a dedicated port. This service receives text inputs from the annotation platform and returns predicted spans for attribute mentions. By connecting this API endpoint to Label Studio, we enabled the platform’s auto-annotation functionality, allowing the model to generate real-time annotation suggestions that annotators could review and modify during the labeling process. All files including server and docker definition and command are store in `Sprint_3/src/label_studio_project_setup/`.
 
 Direct products of the annotation process:
 * `Sprint_3/data/annotation_intermediary/annotation_output_sets/annotated_pair1_raw.json` — raw Label Studio export for one annotator pair
@@ -217,7 +216,7 @@ python Sprint_3/src/adjudication.py \
 * `Sprint_3/data/annotation_final/annotated_pair2_adjudicated.jsonl` — JSONL file of final annotations of another 500 reviews
 * `Sprint_3/data/annotation_final/pair2_adjudication_conflicts.csv` — CSV conflict log of another annotator pair
 
-## Discussion of the Annotation Process
+## Discussion of the annotation process
 
 - During annotation, we maintained a shared attribute glossary so that newly introduced labels could be reused consistently across annotators rather than drifting into synonyms or small naming variants. This helped keep the final attribute inventory to a manageable and desirable set of about 45 labels, even though the schema itself was open-ended and allowed new labels when needed. 
 
@@ -227,7 +226,7 @@ python Sprint_3/src/adjudication.py \
 
 ---
 
-# Interannotator agreement study
+# Interannotator Agreement Study
 
 To measure the consistency between annotations, we conducted an inter-annotator agreement (IAA) analysis between two annotators: a human annotator and the AI system. Each item contains three annotation fields (title, review, and description), where spans corresponding to attribute mentions are annotated. For each item and each field, we compared the spans identified by the two annotators. We take annotated data as input, and output the IAA score in predefined metrics.
 
@@ -373,8 +372,3 @@ Pull requests were reviewed by team members prior to merging:
   - Freya reviewed Wei’s work
   - Wei reviewed Leah’s work
   - Leah reviewed Yirui’s work
----
-
-# Prompt completion
-
-xx
