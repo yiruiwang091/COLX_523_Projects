@@ -347,9 +347,9 @@ The search index is automatically built from the corpus when the server starts.
 All members collaborated on human annotation in Label Studio.
 
 ### **Wei**
-  - Designed and implemented a web interface for corpus search and annotation inspection
-  - xxx
-  - xx
+  - Designed the corpus search interface and interaction workflow for exploring corpus documents and adjudicated annotations.
+  - Implemented a working prototype using FastAPI, Whoosh indexing, and a simple HTML/JavaScript frontend.
+  - Documented the interface architecture, UI mockups, and reproducible instructions for running the prototype.
   
 ### **Yirui**  
   - Designed adjudication strategies to choose the single best annotation per review
