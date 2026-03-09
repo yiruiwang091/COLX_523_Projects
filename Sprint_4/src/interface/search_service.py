@@ -1,40 +1,25 @@
-# ---
-# jupyter:
-#   jupytext:
-#     formats: py:percent
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.17.2
-#   kernelspec:
-#     display_name: Python [conda env:base] *
-#     language: python
-#     name: conda-base-py
-# ---
-
-# %%
-from whoosh.index import create_in
-from whoosh.fields import Schema, TEXT, ID
-from whoosh.qparser import MultifieldParser
 import os
 import shutil
+from typing import Dict, Iterable, Optional, Set
+
+from whoosh.fields import ID, Schema, TEXT
+from whoosh.index import create_in
+from whoosh.qparser import MultifieldParser, QueryParser
 
 
 class SearchService:
+    """Whoosh-backed text search over title, description, and review text."""
 
-    def __init__(self, corpus):
-
+    def __init__(self, corpus, index_dir: str = "index"):
         self.corpus = corpus
+        self.index_dir = index_dir
 
         schema = Schema(
             doc_id=ID(stored=True),
             title=TEXT(stored=True),
             description=TEXT(stored=True),
-            reviewText=TEXT(stored=True)
+            reviewText=TEXT(stored=True),
         )
-
-        index_dir = "index"
 
         if os.path.exists(index_dir):
             shutil.rmtree(index_dir)
@@ -44,46 +29,95 @@ class SearchService:
         writer = self.ix.writer()
 
         for doc in corpus.iter_docs():
-
             writer.add_document(
                 doc_id=str(doc.get("review_id", "")),
                 title=str(doc.get("title", "") or ""),
                 description=str(doc.get("description", "") or ""),
-                reviewText=str(doc.get("reviewText", "") or "")
+                reviewText=str(doc.get("reviewText", "") or ""),
             )
 
         writer.commit()
 
-    def search(self, q, field="all"):
-        from whoosh.qparser import QueryParser, MultifieldParser
+    def search(
+        self,
+        query_text: str,
+        field: str = "all",
+        allowed_doc_ids: Optional[Set[str]] = None,
+        limit: int = 20,
+    ):
+        query_text = (query_text or "").strip()
+
+        if not query_text:
+            return self.browse(allowed_doc_ids=allowed_doc_ids, limit=limit)
+
+        if field not in {"all", "title", "description", "reviewText"}:
+            field = "all"
 
         if field == "all":
             parser = MultifieldParser(
-                ["title", "description", "reviewText"],
-                schema=self.ix.schema
+                ["title", "description", "reviewText"], schema=self.ix.schema
             )
         else:
             parser = QueryParser(field, schema=self.ix.schema)
 
-        query = parser.parse(q)
-
+        query = parser.parse(query_text)
         results = []
 
         with self.ix.searcher() as searcher:
-            hits = searcher.search(query, limit=20)
+            search_limit = None if allowed_doc_ids is not None else limit
+            hits = searcher.search(query, limit=search_limit)
 
             for hit in hits:
-                snippet = (
-                    hit.get("reviewText", "")[:120]
-                    or hit.get("description", "")[:120]
-                    or hit.get("title", "")
+                doc_id = hit["doc_id"]
+                if allowed_doc_ids is not None and doc_id not in allowed_doc_ids:
+                    continue
+
+                doc = self.corpus.get_doc(doc_id) or {}
+                results.append(
+                    {
+                        "doc_id": doc_id,
+                        "title": hit.get("title", "") or doc.get("title", "") or "",
+                        "snippet": self._make_snippet(doc, field=field),
+                        "score": float(hit.score),
+                    }
                 )
 
-                results.append({
-                    "doc_id": hit["doc_id"],
-                    "title": hit.get("title", ""),
-                    "snippet": snippet,
-                    "score": float(hit.score)
-                })
-                
+                if len(results) >= limit:
+                    break
+
         return results
+
+    def browse(self, allowed_doc_ids: Optional[Set[str]] = None, limit: int = 20):
+        doc_ids = allowed_doc_ids if allowed_doc_ids is not None else set(self.corpus.iter_doc_ids())
+
+        def sort_key(doc_id: str):
+            return (0, int(doc_id)) if str(doc_id).isdigit() else (1, str(doc_id))
+
+        results = []
+        for doc_id in sorted(doc_ids, key=sort_key)[:limit]:
+            doc = self.corpus.get_doc(doc_id) or {}
+            results.append(
+                {
+                    "doc_id": str(doc_id),
+                    "title": doc.get("title", "") or "",
+                    "snippet": self._make_snippet(doc, field="all"),
+                    "score": 0.0,
+                }
+            )
+        return results
+
+    def _make_snippet(self, doc: Dict, field: str = "all", max_len: int = 180) -> str:
+        ordered_fields = []
+        if field in {"title", "description", "reviewText"}:
+            ordered_fields.append(field)
+        ordered_fields.extend(["reviewText", "description", "title"])
+
+        seen = set()
+        for name in ordered_fields:
+            if name in seen:
+                continue
+            seen.add(name)
+            value = str(doc.get(name, "") or "").strip()
+            if value:
+                return value[:max_len]
+        return ""
