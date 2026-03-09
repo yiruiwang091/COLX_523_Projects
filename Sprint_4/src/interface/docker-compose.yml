@@ -1,0 +1,9 @@
+services:
+  corpus-search:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../data:/data:ro
+    environment:
+      - DATA_DIR=/data
