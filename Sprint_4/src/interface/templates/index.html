@@ -278,6 +278,27 @@
             background: #fff;
         }
 
+        .result-image .image-placeholder {
+            width: 140px;
+            height: 140px;
+            border: 1px solid #e3e3e3;
+            border-radius: 10px;
+            background: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .result-image .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: none;
+            background: transparent;
+        }
+
         .result-main {
             flex: 1;
             min-width: 320px;
@@ -942,9 +963,14 @@
                     const annotationHtml = renderAnnotationBlock(r, filters);
 
                     const imageValue = Array.isArray(r.imageURL) ? r.imageURL[0] : r.imageURL;
+                    const fallbackImage = "/static/placeholder.svg";
+
                     const imageHtml = imageValue
-                        ? `<img src="${escapeHtml(imageValue)}" alt="Product image">`
-                        : `<div class="muted">No image</div>`;
+                    ? `<img src="${escapeHtml(imageValue)}" alt="Product image"
+                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;><img src=&quot;/static/placeholder.svg&quot; alt=&quot;No image available&quot;></div>';">`
+                    : `<div class="image-placeholder">
+                            <img src="${fallbackImage}" alt="No image available">
+                        </div>`;
 
                     const ratingText = (r.overall !== null && r.overall !== undefined && r.overall !== "")
                         ? `${escapeHtml(r.overall)} / 5`
