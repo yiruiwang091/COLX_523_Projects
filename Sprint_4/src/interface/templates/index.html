@@ -384,29 +384,51 @@
         .review-highlight-box {
             padding: 12px 14px;
             border: 1px solid #e8e1b5;
-            background: #fffdf2;
+            background: #fffdf6;
             border-radius: 10px;
-            line-height: 1.7;
-            white-space: pre-wrap;
+            line-height: 1.8;
+            white-space: normal;
+            word-break: break-word;
+        }
+        
+        .review-segment {
+            display: inline;
+            padding: 1px 2px;
+            border-radius: 4px;
+            transition: box-shadow 0.15s ease, filter 0.15s ease;
         }
 
-        .highlighted-span {
-            background: #ffef8a;
-            border: 1px solid #e0cf5c;
-            border-radius: 6px;
-            padding: 1px 4px;
+        .review-segment.annotated {
             font-weight: 600;
+            cursor: help;
+        }
+        
+        /* sentiment colors */
+        .review-segment.sentiment-positive {
+            background: #dff5e4;
+            box-shadow: inset 0 0 0 1px #9fd2ab;
         }
 
-        .inline-label {
-            display: inline-block;
-            margin-left: 6px;
-            padding: 1px 6px;
-            border-radius: 999px;
-            font-size: 12px;
-            background: #333;
-            color: #fff;
-            vertical-align: middle;
+        .review-segment.sentiment-negative {
+            background: #ffe680;
+            box-shadow: inset 0 0 0 1px #e1b900;
+        }
+
+        .review-segment.sentiment-neutral {
+            background: #ececec;
+            box-shadow: inset 0 0 0 1px #c9c9c9;
+        }
+
+        /* overlap indicator */
+        .review-segment.overlap {
+            box-shadow:
+                inset 0 0 0 1px currentColor,
+                0 0 0 1.5px rgba(80, 80, 80, 0.35);
+            border-bottom: 2px dashed rgba(80, 80, 80, 0.55);
+        }
+        
+        .review-segment.annotated:hover {
+            filter: brightness(0.97);
         }
 
         .review-legend {
@@ -651,6 +673,13 @@
                 .replace(/'/g, "&#039;");
         }
 
+        function normalizeReviewWhitespace(text) {
+            if (!text) return "";
+            return text
+                .replace(/\s*\n+\s*/g, " ")
+                .replace(/[ \t]+/g, " ");
+        }
+
         function getSelectedRadio(name) {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             return checked ? checked.value : "";
@@ -790,43 +819,78 @@
             if (!reviewText) {
                 return `<div class="muted">No review text available.</div>`;
             }
-
+            
             if (!reviewAnnotations || reviewAnnotations.length === 0) {
-                return `<div class="review-highlight-box">${escapeHtml(reviewText)}</div>`;
+                return `<div class="review-highlight-box">${escapeHtml(normalizeReviewWhitespace(reviewText))}</div>`;
+            }
+            
+            const validAnnotations = [...reviewAnnotations]
+                .filter(a =>
+                    typeof a.start === "number" &&
+                    typeof a.end === "number" &&
+                    a.end > a.start
+                )   
+                .map(a => ({
+                    ...a,
+                    start: Math.max(0, a.start),
+                    end: Math.min(reviewText.length, a.end)
+                }))
+                .filter(a => a.end > a.start);
+                
+            if (validAnnotations.length === 0) {
+                return `<div class="review-highlight-box">${escapeHtml(normalizeReviewWhitespace(reviewText))}</div>`;
             }
 
-            const sorted = [...reviewAnnotations]
-                .filter(a => typeof a.start === "number" && typeof a.end === "number" && a.end > a.start)
-                .sort((a, b) => a.start - b.start);
+            const boundaries = new Set([0, reviewText.length]);
+            validAnnotations.forEach(a => {
+                boundaries.add(a.start);
+                boundaries.add(a.end);
+            });
 
-            if (sorted.length === 0) {
-                return `<div class="review-highlight-box">${escapeHtml(reviewText)}</div>`;
-            }
+            const points = Array.from(boundaries).sort((a, b) => a - b);
 
             let html = "";
-            let cursor = 0;
+            
+            for (let i = 0; i < points.length - 1; i++) {
+                const segStart = points[i];
+                const segEnd = points[i + 1];
 
-            for (const a of sorted) {
-                html += escapeHtml(reviewText.slice(cursor, a.start));
+                if (segEnd <= segStart) continue;
 
-                const spanText = reviewText.slice(a.start, a.end);
-                const label = escapeHtml(a.label || "");
-                const sentiment = escapeHtml(a.sentiment || "");
-
-                html += `
-                    <span class="highlighted-span">${escapeHtml(spanText)}</span>
-                    <span class="inline-label">${label}${sentiment ? " | " + sentiment : ""}</span>
-                `;
-
-                cursor = a.end;
+                const rawSegmentText = reviewText.slice(segStart, segEnd);
+                const segmentText = normalizeReviewWhitespace(rawSegmentText);
+                
+                if (!segmentText) continue;
+                const covering = validAnnotations.filter(a => a.start <= segStart && a.end >= segEnd);
+                
+                if (covering.length === 0) {
+                    html += escapeHtml(segmentText);
+                    continue;
+                }
+                const tooltipText = covering
+                    .map(a => `${a.label || "annotation"}${a.sentiment ? " | " + a.sentiment : ""}`)
+                    .join(" ; ");
+                    
+                const sentiments = covering
+                    .map(a => (a.sentiment || "").toLowerCase())
+                    .filter(Boolean);
+                    
+                let sentimentClass = "sentiment-neutral";
+                if (sentiments.includes("negative")) {
+                    sentimentClass = "sentiment-negative";
+                } else if (sentiments.includes("positive")) {
+                    sentimentClass = "sentiment-positive";
+                }
+                
+                const overlapClass = covering.length >= 2 ? "overlap" : "";
+                
+                html += `<span class="review-segment annotated ${sentimentClass} ${overlapClass}" title="${escapeHtml(tooltipText)}">${escapeHtml(segmentText)}</span>`;
             }
-
-            html += escapeHtml(reviewText.slice(cursor));
-
-            const legend = reviewAnnotations.map(a => {
+            
+            const legend = validAnnotations.map(a => {
                 const label = escapeHtml(a.label || "");
                 const sentiment = escapeHtml(a.sentiment || "");
-                const text = escapeHtml(a.text || "");
+                const text = escapeHtml(a.text || reviewText.slice(a.start, a.end) || "");
                 return `
                     <div class="review-legend-item">
                         ${text} → ${label}${sentiment ? " | " + sentiment : ""}
@@ -880,7 +944,7 @@
                     </div>
                 </div>
             `;
-        }
+}
 
         function getCurrentFilters() {
             return {
