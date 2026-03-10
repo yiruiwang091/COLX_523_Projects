@@ -514,6 +514,10 @@
 
                     <div id="annotation-filter-group" class="hidden" style="margin-top: 14px;">
                         <div class="filter-label" style="font-size:18px;">Attribute</div>
+                        <label class="filter-option">
+                            <input type="checkbox" id="select_all_attributes">
+                            <span>Select all</span>
+                        </label>
                         <div class="checkbox-list" id="attribute-list">
                             <label class="filter-option"><input type="checkbox" name="attribute" value="battery_type"><span>battery_type</span></label>
                             <label class="filter-option"><input type="checkbox" name="attribute" value="brand_trust"><span>brand_trust</span></label>
@@ -578,9 +582,6 @@
                                 <label class="filter-option"><input type="checkbox" name="sentiment" value="negative"><span>negative</span></label>
                                 <label class="filter-option"><input type="checkbox" name="sentiment" value="neutral"><span>neutral</span></label>
                             </div>
-                            <div class="filter-note">
-                                Sentiment filtering is applied to review annotations only.
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -611,6 +612,7 @@
         const annotationFilterGroup = document.getElementById("annotation-filter-group");
         const reviewSentimentOnlyCheckbox = document.getElementById("review_sentiment_only");
         const sentimentFilterGroup = document.getElementById("sentiment-filter-group");
+        const selectAllAttributesCheckbox = document.getElementById("select_all_attributes");
 
         queryInput.addEventListener("keydown", function(event) {
             if (event.key === "Enter") {
@@ -644,28 +646,58 @@
             });
         }
 
+        function getAttributeCheckboxes() {
+            return Array.from(document.querySelectorAll('input[name="attribute"]'));
+        }
+        
+        function syncSelectAllAttributesState() {
+            const attributeCheckboxes = getAttributeCheckboxes();
+            const checkedCount = attributeCheckboxes.filter(cb => cb.checked).length;
+
+            selectAllAttributesCheckbox.checked =
+            attributeCheckboxes.length > 0 && checkedCount === attributeCheckboxes.length;
+
+            selectAllAttributesCheckbox.indeterminate =
+            checkedCount > 0 && checkedCount < attributeCheckboxes.length;
+        }
+
         function updateFilterVisibility() {
             const showAnnotationFilters = annotatedOnlyCheckbox.checked;
             annotationFilterGroup.classList.toggle("hidden", !showAnnotationFilters);
-
+            
             if (!showAnnotationFilters) {
                 clearCheckedValues("attribute");
+                selectAllAttributesCheckbox.checked = false;
+                selectAllAttributesCheckbox.indeterminate = false;
+
                 reviewSentimentOnlyCheckbox.checked = false;
                 clearCheckedValues("sentiment");
                 sentimentFilterGroup.classList.add("hidden");
                 return;
             }
-
+            
             const showSentimentFilters = reviewSentimentOnlyCheckbox.checked;
             sentimentFilterGroup.classList.toggle("hidden", !showSentimentFilters);
-
+            
             if (!showSentimentFilters) {
                 clearCheckedValues("sentiment");
             }
+            syncSelectAllAttributesState();
         }
 
         annotatedOnlyCheckbox.addEventListener("change", updateFilterVisibility);
         reviewSentimentOnlyCheckbox.addEventListener("change", updateFilterVisibility);
+        selectAllAttributesCheckbox.addEventListener("change", function() {
+            const checked = this.checked;
+            getAttributeCheckboxes().forEach(cb => {
+                cb.checked = checked;
+            });
+            this.indeterminate = false;
+        });
+        
+        getAttributeCheckboxes().forEach(cb => {
+            cb.addEventListener("change", syncSelectAllAttributesState);
+        });
 
         function buildSnippetText(r) {
             const text = r.snippet || "";
@@ -841,18 +873,20 @@
         }
 
         function clearFilters() {
-            document.getElementById("query").value = "";
             document.querySelector(`input[name="field"][value="all"]`).checked = true;
             annotatedOnlyCheckbox.checked = false;
             reviewSentimentOnlyCheckbox.checked = false;
             clearCheckedValues("attribute");
             clearCheckedValues("sentiment");
+            selectAllAttributesCheckbox.checked = false;
+            selectAllAttributesCheckbox.indeterminate = false;
+            
             updateFilterVisibility();
-
+            
             const resultsDiv = document.getElementById("results");
             const detailsContainer = document.getElementById("details-container");
             const detailsDiv = document.getElementById("details");
-
+            
             resultsDiv.innerHTML = `<div class="message muted">Filters cleared.</div>`;
             detailsContainer.style.display = "none";
             detailsDiv.textContent = "";
