@@ -12,6 +12,12 @@
             color: #111;
         }
 
+        .query-match {
+            background: #d9ecff;
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+
         .page {
             max-width: 1440px;
             margin: 0 auto;
@@ -489,6 +495,78 @@
             opacity: 1;
         }
 
+        .sentiment-legend-box {
+            margin: 8px 0 16px 0;
+            padding: 10px 12px;
+            border: 1px solid #e3e3e3;
+            border-radius: 10px;
+            background: #fafafa;
+            display: inline-block;
+        }
+        
+        .legend-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+
+        .legend-swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid #ccc;
+        }
+
+        .legend-positive {
+            background: #dff5e4;
+            border-color: #9fd2ab;
+        }
+
+        .legend-negative {
+            background: #ffe680;
+            border-color: #e1b900;
+        }
+
+        .legend-neutral {
+            background: #ececec;
+            border-color: #c9c9c9;
+        }
+
+        .legend-overlap {
+            background: #fff;
+            border: 2px dashed rgba(80, 80, 80, 0.55);
+        }
+
+        .legend-query-chip {
+            background: #d9ecff;
+            border: 1px solid #8bbbe8;
+            border-radius: 6px;
+            padding: 2px 8px;
+        }
+
+        .sort-bar {
+            margin: 8px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-bar select {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
         @media (max-width: 980px) {
             .main-layout {
                 flex-direction: column;
@@ -637,8 +715,27 @@
 
             <section class="results-panel">
                 <h2>Results</h2>
+                <div class="sort-bar">
+                    <label for="sort_by"><strong>Sort by:</strong></label>
+                    <select id="sort_by">
+                        <option value="relevance">Relevance</option>
+                        <option value="rating_desc">Rating: high to low</option>
+                        <option value="rating_asc">Rating: low to high</option>
+                        <option value="doc_id_asc">Doc ID</option>
+                    </select>
+                </div>
+
                 <div id="results">
                     <div class="message muted">No results found.</div>
+                </div>
+
+                <div class="sentiment-legend-box">
+                    <div class="legend-title">Legend:</div>
+                    <div class="legend-item"><span class="legend-swatch legend-positive"></span> positive</div>
+                    <div class="legend-item"><span class="legend-swatch legend-negative"></span> negative</div>
+                    <div class="legend-item"><span class="legend-swatch legend-neutral"></span> neutral</div>
+                    <div class="legend-item"><span class="legend-swatch legend-overlap"></span> overlap</div>
+                    <div class="legend-item"><span class="legend-query-chip">query match</span></div>
                 </div>
 
                 <div id="details-container" style="display:none;">
@@ -671,6 +768,40 @@
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
+
+        function highlightQueryMatches(text, query) {
+            const safeText = escapeHtml(text || "");
+            const q = (query || "").trim();
+            if (!q) return safeText;
+
+            const terms = q.split(/\s+/).filter(Boolean);
+            if (!terms.length) return safeText;
+
+            const pattern = terms.map(escapeRegExp).join("|");
+            const regex = new RegExp(`(${pattern})`, "gi");
+
+            return safeText.replace(regex, `<span class="query-match">$1</span>`);
+        }
+
+        function sortResults(results, sortBy) {
+            const items = [...results];
+
+            if (sortBy === "rating_desc") {
+                items.sort((a, b) => (Number(b.overall) || -Infinity) - (Number(a.overall) || -Infinity));
+            } else if (sortBy === "rating_asc") {
+                items.sort((a, b) => (Number(a.overall) || Infinity) - (Number(b.overall) || Infinity));
+            } else if (sortBy === "doc_id_asc") {
+                items.sort((a, b) => String(a.doc_id).localeCompare(String(b.doc_id), undefined, { numeric: true }));
+            } else {
+                items.sort((a, b) => (Number(b.score) || -Infinity) - (Number(a.score) || -Infinity));
+            }
+
+            return items;
         }
 
         function normalizeReviewWhitespace(text) {
@@ -737,6 +868,7 @@
 
         annotatedOnlyCheckbox.addEventListener("change", updateFilterVisibility);
         reviewSentimentOnlyCheckbox.addEventListener("change", updateFilterVisibility);
+        document.getElementById("sort_by").addEventListener("change", searchReviews);
         selectAllAttributesCheckbox.addEventListener("change", function() {
             const checked = this.checked;
             getAttributeCheckboxes().forEach(cb => {
@@ -815,13 +947,13 @@
             `;
         }
 
-        function highlightReviewText(reviewText, reviewAnnotations) {
+        function highlightReviewText(reviewText, reviewAnnotations, query) {
             if (!reviewText) {
                 return `<div class="muted">No review text available.</div>`;
             }
             
             if (!reviewAnnotations || reviewAnnotations.length === 0) {
-                return `<div class="review-highlight-box">${escapeHtml(normalizeReviewWhitespace(reviewText))}</div>`;
+                return `<div class="review-highlight-box">${highlightQueryMatches(reviewText, query)}</div>`;
             }
             
             const validAnnotations = [...reviewAnnotations]
@@ -838,7 +970,7 @@
                 .filter(a => a.end > a.start);
                 
             if (validAnnotations.length === 0) {
-                return `<div class="review-highlight-box">${escapeHtml(normalizeReviewWhitespace(reviewText))}</div>`;
+                return `<div class="review-highlight-box">${highlightQueryMatches(reviewText, query)}</div>`;
             }
 
             const boundaries = new Set([0, reviewText.length]);
@@ -864,7 +996,7 @@
                 const covering = validAnnotations.filter(a => a.start <= segStart && a.end >= segEnd);
                 
                 if (covering.length === 0) {
-                    html += escapeHtml(segmentText);
+                    html += highlightQueryMatches(segmentText, query);
                     continue;
                 }
                 const tooltipText = covering
@@ -884,7 +1016,7 @@
                 
                 const overlapClass = covering.length >= 2 ? "overlap" : "";
                 
-                html += `<span class="review-segment annotated ${sentimentClass} ${overlapClass}" title="${escapeHtml(tooltipText)}">${escapeHtml(segmentText)}</span>`;
+                html += `<span class="review-segment annotated ${sentimentClass} ${overlapClass}" title="${escapeHtml(tooltipText)}">${highlightQueryMatches(segmentText, query)}</span>`;
             }
             
             const legend = validAnnotations.map(a => {
@@ -940,11 +1072,11 @@
 
                     <div class="annotation-section">
                         <div class="annotation-section-title">Review</div>
-                        ${highlightReviewText(reviewText, grouped.review)}
+                        ${highlightReviewText(reviewText, grouped.review, currentFilters.query)}
                     </div>
                 </div>
             `;
-}
+        }
 
         function getCurrentFilters() {
             return {
@@ -953,11 +1085,13 @@
                 annotatedOnly: document.getElementById("annotated_only").checked,
                 attributes: getCheckedValues("attribute"),
                 reviewSentimentOnly: document.getElementById("review_sentiment_only").checked,
-                sentiments: getCheckedValues("sentiment")
+                sentiments: getCheckedValues("sentiment"),
+                sortBy: document.getElementById("sort_by")?.value || "relevance"
             };
         }
 
         function clearFilters() {
+            document.getElementById("query").value = "";
             document.querySelector(`input[name="field"][value="all"]`).checked = true;
             annotatedOnlyCheckbox.checked = false;
             reviewSentimentOnlyCheckbox.checked = false;
@@ -1013,14 +1147,16 @@
                 const data = await res.json();
                 console.log("API response:", data);
 
+                const sortedResults = sortResults(data.results || [], filters.sortBy);
+
                 resultsDiv.innerHTML = "";
 
-                if (!data.results || data.results.length === 0) {
+                if (!sortedResults || sortedResults.length === 0) {
                     resultsDiv.innerHTML = `<div class="message muted">No results found.</div>`;
                     return;
                 }
 
-                data.results.forEach(r => {
+                sortedResults.forEach(r => {
                     const resultBox = document.createElement("div");
                     resultBox.className = "result";
 
@@ -1030,15 +1166,18 @@
                     const fallbackImage = "/static/placeholder.svg";
 
                     const imageHtml = imageValue
-                    ? `<img src="${escapeHtml(imageValue)}" alt="Product image"
-                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;><img src=&quot;/static/placeholder.svg&quot; alt=&quot;No image available&quot;></div>';">`
-                    : `<div class="image-placeholder">
-                            <img src="${fallbackImage}" alt="No image available">
+                        ? `<img src="${escapeHtml(imageValue)}" alt="Product image"
+                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;><img src=&quot;/static/placeholder.svg&quot; alt=&quot;No image available&quot;></div>';">`
+                        : `<div class="image-placeholder">
+                                <img src="${fallbackImage}" alt="No image available">
                         </div>`;
 
                     const ratingText = (r.overall !== null && r.overall !== undefined && r.overall !== "")
                         ? `${escapeHtml(r.overall)} / 5`
                         : "N/A";
+
+                    const titleHtml = highlightQueryMatches(r.title || "(no title)", filters.query);
+                    const snippetHtml = highlightQueryMatches(buildSnippetText(r), filters.query);
 
                     resultBox.innerHTML = `
                         <div class="result-top">
@@ -1048,8 +1187,8 @@
 
                             <div class="result-main">
                                 <div class="result-line"><strong>Doc ID:</strong> ${escapeHtml(r.doc_id)}</div>
-                                <div class="result-line"><strong>Title:</strong> ${escapeHtml(r.title || "(no title)")}</div>
-                                <div class="result-line snippet"><strong>Snippet:</strong> ${escapeHtml(buildSnippetText(r))}</div>
+                                <div class="result-line"><strong>Title:</strong> ${titleHtml}</div>
+                                <div class="result-line snippet"><strong>Snippet:</strong> ${snippetHtml}</div>
                                 <div class="result-line rating"><strong>Rating:</strong> ${ratingText}</div>
                                 <div class="result-line score">
                                     <strong class="tooltip">
