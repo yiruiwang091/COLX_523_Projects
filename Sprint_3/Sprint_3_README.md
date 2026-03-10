@@ -66,7 +66,7 @@ COLX523_Freya_Leah_Wei_Yirui/
     │   │   ├── search_service.py
     │   │   ├── index/
     │   │   │   ├── MAIN_WRITELOCK
-    │   │   │   ├── MAIN_q09r0owt4vv6ihu8.seg
+    │   │   │   ├── MAIN_ie0je3tal63qcc9m.seg
     │   │   │   └── _MAIN_1.toc
     │   │   ├── corpus_store.py
     │   │   ├── app.py
@@ -329,8 +329,6 @@ Search results will display ranked documents from the corpus.
 
 Click `View Details` to inspect the full document content and its associated annotations.
 
-> Notes
-
 The interface reads data from:
 
 - the processed corpus file
@@ -352,19 +350,19 @@ All members collaborated on human annotation in Label Studio.
   - Documented the interface architecture, UI mockups, and reproducible instructions for running the prototype.
   
 ### **Yirui**  
-  - Designed adjudication strategies to choose the single best annotation per review
-  - Implemented code for adjudication to convert the raw annotation into the final annotation
+  - Designed adjudication strategies to choose the single best annotation per review.
+  - Implemented code for adjudication to convert the raw annotation into the final annotation.
   - Cleaned and normalized exported annotation files and generated adjudicated JSON outputs with audit logs.
   
 ### **Freya (the scrum leader this week)**  
-  - Implemented annotation input generation, documented the annotation process, and refined the code for adjudication
-  - Organized the Sprint_3 repository and defined data storage and reproducibility policies
-  - Facilitated workflow and provided ad-hoc support to the team
+  - Implemented annotation input generation, documented the annotation process, and refined the code for adjudication.
+  - Organized the Sprint_3 repository and defined data storage and reproducibility policies.
+  - Facilitated workflow and provided ad-hoc support to the team.
 
 ### **Leah**  
-  - Set up Label Studio using a Docker container to provide a centralized annotation environment for the team
-  - Enabled automatic annotation by GPT-5 mini model on Label Studio to support the annotation process by providing recommendations
-  - Conducted an inter-annotator agreement (IAA) analysis 
+  - Set up Label Studio using a Docker container to provide a centralized annotation environment for the team.
+  - Enabled automatic annotation by GPT-5 mini model on Label Studio to support the annotation process by providing recommendations.
+  - Conducted an inter-annotator agreement (IAA) analysis.
   
 All major design decisions were discussed collaboratively.  
 Pull requests were reviewed by team members prior to merging: 
