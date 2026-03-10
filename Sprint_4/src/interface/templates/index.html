@@ -8,14 +8,12 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #f8f8f8;
             color: #111;
-        }
-
-        .query-match {
-            background: #d9ecff;
-            border-radius: 4px;
-            padding: 0 2px;
+            background-image: url("/static/forest.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         .page {
@@ -23,12 +21,28 @@
             margin: 0 auto;
             padding: 32px 24px 48px;
             box-sizing: border-box;
+            background: transparent;
+            min-height: 100vh;
         }
 
         h1 {
             font-size: 54px;
             margin: 0 0 32px;
             text-align: center;
+        }
+
+        .page-title-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title-pill {
+            display: inline-block;
+            padding: 18px 28px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
         }
 
         h2 {
@@ -69,9 +83,18 @@
             box-sizing: border-box;
         }
 
-        .top-search input[type="text"]:focus,
-        select:focus {
-            border-color: #666;
+        .top-search input[type="text"] {
+            flex: 1;
+            min-width: 280px;
+            height: 54px;
+            padding: 0 18px;
+            font-size: 20px;
+            border: 1px solid rgba(180, 180, 180, 0.85);
+            border-radius: 14px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            box-sizing: border-box;
+            backdrop-filter: blur(3px);
         }
 
         .top-search button {
@@ -80,8 +103,9 @@
             font-size: 20px;
             border: none;
             border-radius: 14px;
-            background: #e0e0e0;
+            background: rgba(224, 224, 224, 0.85);
             cursor: pointer;
+            backdrop-filter: blur(3px);
         }
 
         .top-search button:hover,
@@ -100,16 +124,16 @@
         .sidebar {
             width: 300px;
             flex-shrink: 0;
-            background: #f3f3f3;
-            border: 1px solid #ccc;
+            background: rgba(243, 243, 243, 0.85);
+            border: 1px solid rgba(204, 204, 204, 0.85);
             border-radius: 16px;
             padding: 22px 20px;
             box-sizing: border-box;
             position: sticky;
             top: 18px;
-
             max-height: calc(100vh - 36px);
             overflow-y: auto;
+            backdrop-filter: blur(4px);
         }
 
         .sidebar-title {
@@ -219,7 +243,7 @@
         }
 
         .apply-btn {
-            background: #dedede;
+            background: #ececec;
         }
 
         .clear-btn {
@@ -234,14 +258,21 @@
         .results-panel {
             flex: 1;
             min-width: 0;
+            background: rgba(243, 243, 243, 0.85);
+            border: 1px solid rgba(204, 204, 204, 0.85);
+            border-radius: 16px;
+            padding: 20px;
+            box-sizing: border-box;
+            backdrop-filter: blur(4px);
         }
 
         .message {
             padding: 14px 16px;
             border-radius: 10px;
             margin-bottom: 16px;
-            background: white;
-            border: 1px solid #ddd;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(221, 221, 221, 0.8);
+            backdrop-filter: blur(3px);
         }
 
         .error {
@@ -255,12 +286,13 @@
         }
 
         .result {
-            background: white;
-            border: 1px solid #ddd;
+            background: rgba(243, 243, 243, 0.85);
+            border: 1px solid rgba(204, 204, 204, 0.85);
             border-radius: 12px;
             padding: 18px 20px;
             margin-bottom: 18px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            backdrop-filter: blur(4px);
         }
 
         .result-top {
@@ -338,9 +370,21 @@
         .annotations {
             margin-top: 14px;
             padding: 14px 16px;
-            background: #fafafa;
-            border: 1px solid #eee;
+            background: rgba(250, 250, 250, 0.85);
+            border: 1px solid rgba(238, 238, 238, 0.85);
             border-radius: 10px;
+            backdrop-filter: blur(3px);
+        }
+
+        .details-panel {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(221, 221, 221, 0.85);
+            border-radius: 12px;
+            padding: 22px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            backdrop-filter: blur(4px);
         }
 
         .annotations h4 {
@@ -456,16 +500,6 @@
             margin-top: 14px;
         }
 
-        .details-panel {
-            margin-top: 40px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 22px;
-            white-space: pre-wrap;
-            overflow-x: auto;
-        }
-
         .tooltip {
             position: relative;
             cursor: help;
@@ -493,28 +527,6 @@
         .tooltip:hover .tooltip-text {
             visibility: visible;
             opacity: 1;
-        }
-
-        .sentiment-legend-box {
-            margin: 8px 0 16px 0;
-            padding: 10px 12px;
-            border: 1px solid #e3e3e3;
-            border-radius: 10px;
-            background: #fafafa;
-            display: inline-block;
-        }
-        
-        .legend-title {
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 4px;
-            font-size: 14px;
         }
 
         .legend-swatch {
@@ -559,6 +571,62 @@
             gap: 10px;
         }
 
+        .results-header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(243, 243, 243, 0.85);
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(204, 204, 204, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .sort-legend-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin: 8px 0 16px 0;
+        }
+
+        .sort-bar {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .sentiment-legend-inline {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            font-size: 14px;
+        }
+
+        .legend-title-inline {
+            margin-right: 2px;
+        }
+
+        .legend-inline-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
         .sort-bar select {
             padding: 8px 10px;
             border: 1px solid #ccc;
@@ -591,7 +659,11 @@
 </head>
 <body>
     <div class="page">
-        <h1>Amazon Product Reviews Corpus: Coleman</h1>
+        <div class="page-title-wrap">
+            <div class="page-title-pill">
+                <h1>Amazon Product Reviews Corpus: Coleman</h1>
+            </div>
+        </div>
 
         <div class="top-search-wrap">
             <div class="top-search">
@@ -714,28 +786,35 @@
             </aside>
 
             <section class="results-panel">
-                <h2>Results</h2>
-                <div class="sort-bar">
-                    <label for="sort_by"><strong>Sort by:</strong></label>
-                    <select id="sort_by">
-                        <option value="relevance">Relevance</option>
-                        <option value="rating_desc">Rating: high to low</option>
-                        <option value="rating_asc">Rating: low to high</option>
-                        <option value="doc_id_asc">Doc ID</option>
-                    </select>
+                <div class="results-header-sticky">
+                    <h2>Results</h2>
+
+                    <div class="sort-legend-row">
+                        <div class="sort-bar">
+                            <label for="sort_by"><strong>Sort by:</strong></label>
+                            <select id="sort_by">
+                                <option value="relevance_desc">Relevance: high to low</option>
+                                <option value="relevance_asc">Relevance: low to high</option>
+                                <option value="rating_desc">Rating: high to low</option>
+                                <option value="rating_asc">Rating: low to high</option>
+                                <option value="doc_id_desc">Doc ID: high to low</option>
+                                <option value="doc_id_asc">Doc ID: low to high</option>
+                            </select>
+                        </div>
+
+                        <div class="sentiment-legend-inline">
+                            <span class="legend-title-inline"><strong>Legend:</strong></span>
+                            <span class="legend-inline-item"><span class="legend-swatch legend-positive"></span> positive</span>
+                            <span class="legend-inline-item"><span class="legend-swatch legend-negative"></span> negative</span>
+                            <span class="legend-inline-item"><span class="legend-swatch legend-neutral"></span> neutral</span>
+                            <span class="legend-inline-item"><span class="legend-swatch legend-overlap"></span> overlap</span>
+                            <span class="legend-inline-item"><span class="legend-query-chip">query match</span></span>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="results">
                     <div class="message muted">No results found.</div>
-                </div>
-
-                <div class="sentiment-legend-box">
-                    <div class="legend-title">Legend:</div>
-                    <div class="legend-item"><span class="legend-swatch legend-positive"></span> positive</div>
-                    <div class="legend-item"><span class="legend-swatch legend-negative"></span> negative</div>
-                    <div class="legend-item"><span class="legend-swatch legend-neutral"></span> neutral</div>
-                    <div class="legend-item"><span class="legend-swatch legend-overlap"></span> overlap</div>
-                    <div class="legend-item"><span class="legend-query-chip">query match</span></div>
                 </div>
 
                 <div id="details-container" style="display:none;">
@@ -791,12 +870,18 @@
         function sortResults(results, sortBy) {
             const items = [...results];
 
-            if (sortBy === "rating_desc") {
+            if (sortBy === "relevance_asc") {
+                items.sort((a, b) => (Number(a.score) || Infinity) - (Number(b.score) || Infinity));
+            } else if (sortBy === "relevance_desc") {
+                items.sort((a, b) => (Number(b.score) || -Infinity) - (Number(a.score) || -Infinity));
+            } else if (sortBy === "rating_desc") {
                 items.sort((a, b) => (Number(b.overall) || -Infinity) - (Number(a.overall) || -Infinity));
             } else if (sortBy === "rating_asc") {
                 items.sort((a, b) => (Number(a.overall) || Infinity) - (Number(b.overall) || Infinity));
             } else if (sortBy === "doc_id_asc") {
                 items.sort((a, b) => String(a.doc_id).localeCompare(String(b.doc_id), undefined, { numeric: true }));
+            } else if (sortBy === "doc_id_desc") {
+                items.sort((a, b) => String(b.doc_id).localeCompare(String(a.doc_id), undefined, { numeric: true }));
             } else {
                 items.sort((a, b) => (Number(b.score) || -Infinity) - (Number(a.score) || -Infinity));
             }
@@ -1086,7 +1171,7 @@
                 attributes: getCheckedValues("attribute"),
                 reviewSentimentOnly: document.getElementById("review_sentiment_only").checked,
                 sentiments: getCheckedValues("sentiment"),
-                sortBy: document.getElementById("sort_by")?.value || "relevance"
+                sortBy: document.getElementById("sort_by")?.value || "relevance_desc"
             };
         }
 
