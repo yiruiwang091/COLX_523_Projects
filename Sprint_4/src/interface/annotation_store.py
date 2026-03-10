@@ -13,7 +13,7 @@ class AnnotationStore:
 
     - returning a merged document record for detail views
     - filtering search results by attribute and sentiment
-    - optionally attaching parsed annotations to search results (include_annotations=true in app.py)
+    - returning parsed annotations for annotated search results and detail views
     """
 
     def __init__(self, folder: str):

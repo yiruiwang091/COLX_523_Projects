@@ -63,7 +63,6 @@ def search(
     q: Optional[str] = Query(default=None),
     field: str = "all",
     annotated_only: bool = False,
-    include_annotations: bool = False,
     attribute: str = "",
     sentiment: str = "",
 ):
@@ -84,6 +83,8 @@ def search(
         limit=20,
     )
 
+    attach_annotations = bool(annotated_only or attribute or sentiment)
+
     enriched_results = []
     for result in results:
         doc_id = str(result["doc_id"])
@@ -95,7 +96,7 @@ def search(
             "imageURL": merged_doc.get("imageURL"),
         }
 
-        if include_annotations:
+        if attach_annotations:
             payload["annotations"] = annotations.get_annotations(doc_id)
 
         enriched_results.append(payload)
@@ -104,7 +105,6 @@ def search(
         "query": query_text,
         "field": field,
         "annotated_only": annotated_only,
-        "include_annotations": include_annotations,
         "attribute": attribute,
         "sentiment": sentiment,
         "results": enriched_results,
