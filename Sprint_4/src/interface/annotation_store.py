@@ -1,6 +1,13 @@
 import json
 import os
-from typing import Dict, Iterable, List, Optional, Set
+from typing import Dict, List, Optional, Set
+
+
+SECTION_TO_TEXT_FIELD = {
+    "title": "title",
+    "description": "description",
+    "review": "reviewText",
+}
 
 
 class AnnotationStore:
@@ -14,6 +21,7 @@ class AnnotationStore:
     - returning a merged document record for detail views
     - filtering search results by attribute and sentiment
     - returning parsed annotations for annotated search results and detail views
+    - returning section-aware annotation payloads with full text plus spans
     """
 
     def __init__(self, folder: str):
@@ -56,53 +64,77 @@ class AnnotationStore:
 
     def _parse_record(self, rec: dict) -> List[dict]:
         parsed: List[dict] = []
-
-        title_spans = rec.get("title_attr_span", []) or []
-        title_names = rec.get("title_attr_name", []) or []
-        for span, name in zip(title_spans, title_names):
-            parsed.append(
-                {
-                    "section": "title",
-                    "text": span.get("text", "") if isinstance(span, dict) else "",
-                    "label": name or "",
-                    "sentiment": "",
-                }
+        parsed.extend(
+            self._parse_section(
+                section="title",
+                spans=rec.get("title_attr_span", []) or [],
+                labels=rec.get("title_attr_name", []) or [],
+                sentiments=[],
             )
-
-        desc_spans = rec.get("desc_attr_span", []) or []
-        desc_names = rec.get("desc_attr_name", []) or []
-        for span, name in zip(desc_spans, desc_names):
-            parsed.append(
-                {
-                    "section": "description",
-                    "text": span.get("text", "") if isinstance(span, dict) else "",
-                    "label": name or "",
-                    "sentiment": "",
-                }
+        )
+        parsed.extend(
+            self._parse_section(
+                section="description",
+                spans=rec.get("desc_attr_span", []) or [],
+                labels=rec.get("desc_attr_name", []) or [],
+                sentiments=[],
             )
-
-        review_spans = rec.get("review_attr_span", []) or []
-        review_names = rec.get("review_attr_name", []) or []
-        review_sentiments = rec.get("sentiment", []) or []
-
-        for i, (span, name) in enumerate(zip(review_spans, review_names)):
-            sent = review_sentiments[i] if i < len(review_sentiments) else ""
-            parsed.append(
-                {
-                    "section": "review",
-                    "text": span.get("text", "") if isinstance(span, dict) else "",
-                    "label": name or "",
-                    "sentiment": sent or "",
-                }
+        )
+        parsed.extend(
+            self._parse_section(
+                section="review",
+                spans=rec.get("review_attr_span", []) or [],
+                labels=rec.get("review_attr_name", []) or [],
+                sentiments=rec.get("sentiment", []) or [],
             )
-
+        )
         return parsed
 
-    def get_annotations(self, doc_id: str) -> List[dict]:
-        return self.annotations.get(str(doc_id), [])
+    def _parse_section(
+        self,
+        section: str,
+        spans: List[dict],
+        labels: List[str],
+        sentiments: List[str],
+    ) -> List[dict]:
+        items: List[dict] = []
+        for i, (span, label) in enumerate(zip(spans, labels)):
+            span = span if isinstance(span, dict) else {}
+            items.append(
+                {
+                    "section": section,
+                    "start": span.get("start"),
+                    "end": span.get("end"),
+                    "text": span.get("text", "") or "",
+                    "label": label or "",
+                    "sentiment": sentiments[i] if i < len(sentiments) else "",
+                }
+            )
+        return items
+
+    def get_annotations(self, doc_id: str, section: Optional[str] = None) -> List[dict]:
+        doc_annotations = self.annotations.get(str(doc_id), [])
+        if section is None:
+            return doc_annotations
+        return [item for item in doc_annotations if item.get("section") == section]
 
     def get_record(self, doc_id: str) -> Optional[dict]:
         return self.records.get(str(doc_id))
+
+    def get_section_text(self, doc_id: str, section: str) -> str:
+        rec = self.get_record(doc_id) or {}
+        text_field = SECTION_TO_TEXT_FIELD.get(section, "")
+        return str(rec.get(text_field, "") or "")
+
+    def get_annotation_sections(self, doc_id: str) -> Dict[str, dict]:
+        doc_id = str(doc_id)
+        return {
+            section: {
+                "text": self.get_section_text(doc_id, section),
+                "annotations": self.get_annotations(doc_id, section=section),
+            }
+            for section in ["title", "description", "review"]
+        }
 
     def annotated_doc_ids(self) -> Set[str]:
         return set(self.records.keys())

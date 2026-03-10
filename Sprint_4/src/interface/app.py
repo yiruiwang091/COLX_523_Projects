@@ -92,12 +92,15 @@ def search(
 
         payload = {
             **result,
+            "description": merged_doc.get("description", ""),
+            "reviewText": merged_doc.get("reviewText", ""),
             "overall": merged_doc.get("overall"),
             "imageURL": merged_doc.get("imageURL"),
         }
 
         if attach_annotations:
             payload["annotations"] = annotations.get_annotations(doc_id)
+            payload["annotation_sections"] = annotations.get_annotation_sections(doc_id)
 
         enriched_results.append(payload)
 
@@ -120,6 +123,7 @@ def get_doc(doc_id: str):
     return {
         "doc": merged_doc,
         "annotations": annotations.get_annotations(doc_id),
+        "annotation_sections": annotations.get_annotation_sections(doc_id),
     }
 
 
