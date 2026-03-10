@@ -67,7 +67,10 @@ cd Sprint_4/src/interface
 docker compose up --build
 ```
 
-This will: - Build the Docker image from `Dockerfile` - Mount `Sprint_4/data/` into the container at `/data` (read-only) - Start the FastAPI server on port 8000
+This will: 
+- Build the Docker image from `Dockerfile`
+- Mount `Sprint_4/data/` into the container at `/data` (read-only)
+- Start the FastAPI server on port 8000
 
 ### Step 3: Open the interface
 
