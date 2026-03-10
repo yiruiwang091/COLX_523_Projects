@@ -4,6 +4,7 @@ from typing import Dict, Optional, Set
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from corpus_store import CorpusStore
 from annotation_store import AnnotationStore
@@ -11,6 +12,7 @@ from search_service import SearchService
 
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 DATA_DIR = os.environ.get("DATA_DIR", "../../data")
