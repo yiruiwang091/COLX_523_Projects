@@ -284,3 +284,4 @@ We tested the front end by:
 -   checking placeholder image fallback
 -   checking query highlighting in title, snippet, and review text
 -   checking document detail retrieval
+-   testing the interface in different web browsers (Google Chrome and Safari)
