@@ -118,7 +118,7 @@ http://127.0.0.1:8000
 # API Endpoints
 
 | Endpoint            | Method | Description                                  |
-|---------------------|--------|----------------------------------------------|
+|-----------------------|-------------------|------------------------------|
 | `/`                 | GET    | Serves the HTML search interface             |
 | `/api/search`       | GET    | Full-text search over the corpus             |
 | `/api/doc/{doc_id}` | GET    | Fetch a single document with its annotations |
@@ -126,7 +126,7 @@ http://127.0.0.1:8000
 ### `/api/search` query parameters
 
 | Parameter | Type | Default | Description |
-|----|----|----|----|
+|------------------|------------------|------------------|-------------------|
 | `q` | str | `""` | Search keyword(s) |
 | `field` | str | `"all"` | Field to search: `all`, `title`, `description`, `reviewText` |
 | `annotated_only` | bool | `false` | If true, only return annotated documents |
@@ -166,46 +166,6 @@ The interface allows users to:
 -   sort returned results
 -   inspect annotation results for title, description, and review text
 -   view full document details for a selected result
-
-## How to Run the Interface
-
-### 1. Navigate to the interface folder
-
-Open a terminal and move to the `interface` directory:
-
-```         
-cd interface
-```
-
-### 2. Build and start the Docker container
-
-Run the following command:
-
-```         
-docker compose up --build
-```
-
-This will build the Docker image and start the backend server.
-
-### 3. Open the interface in your browser
-
-Once the container is running, open a browser and go to:
-
-```         
-http://localhost:8000
-```
-
-You should now see the **Amazon Product Reviews Corpus: Coleman** search interface.
-
-### 4. Stop the container
-
-When you are finished testing, stop the server by pressing:
-
-```         
-CTRL + C
-```
-
-in the terminal.
 
 ## Technical Structure
 
