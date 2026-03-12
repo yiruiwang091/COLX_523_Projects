@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Optional, Set
+from typing import List, Dict, Optional, Set
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
@@ -10,10 +10,9 @@ from corpus_store import CorpusStore
 from annotation_store import AnnotationStore
 from search_service import SearchService
 
-
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="frontend")
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 DATA_DIR = os.environ.get("DATA_DIR", "../../data")
 
@@ -65,12 +64,12 @@ def search(
     q: Optional[str] = Query(default=None),
     field: str = "all",
     annotated_only: bool = False,
-    attribute: str = "",
-    sentiment: str = "",
+    attribute: List[str] = Query(default=[]),
+    sentiment: List[str] = Query(default=[]),
 ):
     query_text = (query if query is not None else q) or ""
-    attribute = (attribute or "").strip()
-    sentiment = (sentiment or "").strip()
+    attribute = [a.strip() for a in attribute if a.strip()]
+    sentiment = [s.strip() for s in sentiment if s.strip()]
 
     allowed_doc_ids = _build_allowed_doc_ids(
         annotated_only=annotated_only,
@@ -82,7 +81,7 @@ def search(
         query_text=query_text,
         field=field,
         allowed_doc_ids=allowed_doc_ids,
-        limit=20,
+        limit=None,
     )
 
     attach_annotations = bool(annotated_only or attribute or sentiment)
@@ -131,15 +130,22 @@ def get_doc(doc_id: str):
 
 def _build_allowed_doc_ids(
     annotated_only: bool = False,
-    attribute: str = "",
-    sentiment: str = "",
+    attribute: Optional[List[str]] = None,
+    sentiment: Optional[List[str]] = None,
 ) -> Optional[Set[str]]:
+
+    attribute = attribute or []
+    sentiment = sentiment or []
+
     needs_annotation_filter = bool(annotated_only or attribute or sentiment)
     if not needs_annotation_filter:
         return None
 
     if attribute or sentiment:
-        doc_ids = annotations.filter_doc_ids(attribute=attribute, sentiment=sentiment)
+        doc_ids = annotations.filter_doc_ids(
+            attribute=attribute,
+            sentiment=sentiment
+        )
     else:
         doc_ids = annotations.annotated_doc_ids()
 

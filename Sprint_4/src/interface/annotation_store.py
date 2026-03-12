@@ -1,7 +1,6 @@
 import json
 import os
-from typing import Dict, List, Optional, Set
-
+from typing import Dict, List, Union, Optional, Set
 
 SECTION_TO_TEXT_FIELD = {
     "title": "title",
@@ -152,12 +151,28 @@ class AnnotationStore:
 
         return True
 
-    def filter_doc_ids(self, attribute: str = "", sentiment: str = "") -> Set[str]:
+    def filter_doc_ids(
+        self,
+        attribute: Union[str, List[str]] = "",
+        sentiment: Union[str, List[str]] = ""
+    ) -> Set[str]:
+    
+        if isinstance(attribute, str):
+            attribute = [attribute] if attribute else []
+    
+        if isinstance(sentiment, str):
+            sentiment = [sentiment] if sentiment else []
+    
         candidate_ids = self.annotated_doc_ids()
+    
         return {
             doc_id
             for doc_id in candidate_ids
-            if self.doc_matches(doc_id, attribute=attribute, sentiment=sentiment)
+            if any(
+                self.doc_matches(doc_id, attribute=a, sentiment=s)
+                for a in (attribute or [""])
+                for s in (sentiment or [""])
+            )
         }
 
     def all_labels(self) -> List[str]:
