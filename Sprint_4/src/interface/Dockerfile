@@ -6,7 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py corpus_store.py annotation_store.py search_service.py ./
-COPY templates/ templates/
+COPY frontend/ frontend/
 
 ENV DATA_DIR=/data
 

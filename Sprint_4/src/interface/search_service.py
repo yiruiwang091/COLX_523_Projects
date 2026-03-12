@@ -43,35 +43,35 @@ class SearchService:
         query_text: str,
         field: str = "all",
         allowed_doc_ids: Optional[Set[str]] = None,
-        limit: int = 20,
+        limit: Optional[int] = None,
     ):
         query_text = (query_text or "").strip()
-
+    
         if not query_text:
             return self.browse(allowed_doc_ids=allowed_doc_ids, limit=limit)
-
+    
         if field not in {"all", "title", "description", "reviewText"}:
             field = "all"
-
+    
         if field == "all":
             parser = MultifieldParser(
                 ["title", "description", "reviewText"], schema=self.ix.schema
             )
         else:
             parser = QueryParser(field, schema=self.ix.schema)
-
+    
         query = parser.parse(query_text)
         results = []
-
+    
         with self.ix.searcher() as searcher:
-            search_limit = None if allowed_doc_ids is not None else limit
+            search_limit = None if (allowed_doc_ids is not None or limit is None) else limit
             hits = searcher.search(query, limit=search_limit)
-
+    
             for hit in hits:
                 doc_id = hit["doc_id"]
                 if allowed_doc_ids is not None and doc_id not in allowed_doc_ids:
                     continue
-
+    
                 doc = self.corpus.get_doc(doc_id) or {}
                 results.append(
                     {
@@ -81,20 +81,32 @@ class SearchService:
                         "score": float(hit.score),
                     }
                 )
-
-                if len(results) >= limit:
+    
+                if limit is not None and len(results) >= limit:
                     break
-
+    
         return results
 
-    def browse(self, allowed_doc_ids: Optional[Set[str]] = None, limit: int = 20):
-        doc_ids = allowed_doc_ids if allowed_doc_ids is not None else set(self.corpus.iter_doc_ids())
-
+    def browse(
+        self,
+        allowed_doc_ids: Optional[Set[str]] = None,
+        limit: Optional[int] = None,
+    ):
+        doc_ids = (
+            allowed_doc_ids
+            if allowed_doc_ids is not None
+            else set(self.corpus.iter_doc_ids())
+        )
+    
         def sort_key(doc_id: str):
             return (0, int(doc_id)) if str(doc_id).isdigit() else (1, str(doc_id))
-
+    
+        sorted_doc_ids = sorted(doc_ids, key=sort_key)
+        if limit is not None:
+            sorted_doc_ids = sorted_doc_ids[:limit]
+    
         results = []
-        for doc_id in sorted(doc_ids, key=sort_key)[:limit]:
+        for doc_id in sorted_doc_ids:
             doc = self.corpus.get_doc(doc_id) or {}
             results.append(
                 {
@@ -104,6 +116,7 @@ class SearchService:
                     "score": 0.0,
                 }
             )
+    
         return results
 
     def _make_snippet(self, doc: Dict, field: str = "all", max_len: int = 180) -> str:
