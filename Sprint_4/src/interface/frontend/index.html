@@ -4,222 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Product Reviews Corpus: Coleman</title>
-
     <link rel="stylesheet" href="{{ url_for('frontend', path='styles.css') }}">
 </head>
 <body>
+    <section class="hero-video-section" id="hero">
+        <video
+            id="hero-video"
+            class="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+        >
+            <source src="{{ url_for('frontend', path='video.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="hero-video-overlay"></div>
+
+        <div class="hero-video-content">
+            <div class="hero-brand">Coleman</div>
+            <div class="hero-tagline">The Outside is Calling. Answer it.</div>
+
+            <button id="enter-corpus-btn" class="enter-corpus-btn" type="button">
+                Explore the review corpus
+            </button>
+        </div>
+
+        <button id="hero-video-toggle" class="hero-video-toggle" type="button" aria-label="Pause video">
+            ❚❚
+        </button>
+    </section>
+
     <div class="page">
-        <div class="page-title-wrap">
-            <div class="page-title-pill">
-                <h1>Amazon Product Reviews Corpus: Coleman</h1>
+        <section id="corpus-section" class="corpus-section hidden">
+            <div class="page-title-wrap">
+                <div class="page-title-pill">Amazon Product Reviews Corpus: Coleman</div>
             </div>
-        </div>
 
-        <div class="top-search-wrap">
-            <form id="search-form" class="top-search">
-                <input
-                    id="query"
-                    type="text"
-                    placeholder="Enter keyword to search the full corpus"
-                >
-                <button type="submit">Search</button>
-            </form>
-        </div>
+            <div class="top-search-wrap">
+                <form id="search-form" class="top-search">
+                    <input
+                        id="query"
+                        type="text"
+                        placeholder="Enter keyword to search the full corpus"
+                        autocomplete="off"
+                    >
+                    <button type="submit">Search</button>
+                </form>
+            </div>
 
-        <div class="main-layout">
-            <aside class="sidebar">
-                <div class="sidebar-title">Filters</div>
+            <div class="main-layout">
+                <aside class="sidebar">
+                    <div class="sidebar-title">Filters</div>
 
-                <div class="filter-section">
-                    <div class="filter-label">Search Field</div>
-
-                    <label class="filter-option">
-                        <input type="radio" name="field" value="all" checked>
-                        <span>all</span>
-                    </label>
-
-                    <label class="filter-option">
-                        <input type="radio" name="field" value="title">
-                        <span>title</span>
-                    </label>
-
-                    <label class="filter-option">
-                        <input type="radio" name="field" value="description">
-                        <span>description</span>
-                    </label>
-
-                    <label class="filter-option">
-                        <input type="radio" name="field" value="reviewText">
-                        <span>reviewText</span>
-                    </label>
-                </div>
-
-                <div class="filter-section">
-                    <div class="filter-label">Annotation Option</div>
-
-                    <label class="filter-option">
-                        <input type="checkbox" id="annotated_only">
-                        <span>Annotated data only</span>
-                    </label>
-
-                    <div id="annotation-filter-group" class="hidden annotation-filter-group">
-                        <div class="filter-label subheading">Attribute</div>
+                    <div class="filter-section">
+                        <div class="filter-label">Search Field</div>
 
                         <label class="filter-option">
-                            <input type="checkbox" id="select_all_attributes">
-                            <span>Select all</span>
+                            <input type="radio" name="field" value="all" checked>
+                            <span>all</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="field" value="title">
+                            <span>title</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="field" value="description">
+                            <span>description</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="field" value="reviewText">
+                            <span>reviewText</span>
+                        </label>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-label">Annotation Option</div>
+
+                        <label class="filter-option">
+                            <input type="checkbox" id="annotated_only">
+                            <span>Annotated data only</span>
                         </label>
 
-                        <div class="checkbox-list" id="attribute-list">
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="battery_type"><span>battery_type</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="brand_trust"><span>brand_trust</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="brightness"><span>brightness</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="build_quality"><span>build_quality</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="capacity"><span>capacity</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="color"><span>color</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="comfort"><span>comfort</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="compatibility"><span>compatibility</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="customer_service"><span>customer_service</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="design"><span>design</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="durability"><span>durability</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="ease_of_cleaning"><span>ease_of_cleaning</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="ease_of_use"><span>ease_of_use</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="environmental_impact"><span>environmental_impact</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="included_items"><span>included_items</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="insulation"><span>insulation</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="leak_resistance"><span>leak_resistance</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="material"><span>material</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="odor_resistance"><span>odor_resistance</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="overall"><span>overall</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="performance"><span>performance</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="portability"><span>portability</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="power"><span>power</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="price"><span>price</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="privacy"><span>privacy</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="purchase_intent"><span>purchase_intent</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="purchase_recommendation"><span>purchase_recommendation</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="quantity"><span>quantity</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="runtime"><span>runtime</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="rust_resistance"><span>rust_resistance</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="safety_certification"><span>safety_certification</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="seller_description_accuracy"><span>seller_description_accuracy</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="sharpness"><span>sharpness</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="size"><span>size</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="stability"><span>stability</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="storage"><span>storage</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="sun_protection"><span>sun_protection</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="temperature_rating"><span>temperature_rating</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="ventilation"><span>ventilation</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="versatility"><span>versatility</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="waterproofing"><span>waterproofing</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="weather_resistance"><span>weather_resistance</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="weight"><span>weight</span></label>
-                            <label class="filter-option"><input type="checkbox" name="attribute" value="wind_resistance"><span>wind_resistance</span></label>
-                        </div>
+                        <div id="annotation-filter-group" class="hidden" style="margin-top: 14px;">
+                            <div class="filter-label" style="font-size:18px;">Attribute</div>
 
-                        <div class="sub-filter-toggle">
-                            <label class="sub-filter-label">
-                                <input type="checkbox" id="review_sentiment_only">
-                                <span>Enable sentiment filter</span>
+                            <label class="filter-option">
+                                <input type="checkbox" id="select_all_attributes">
+                                <span>Select all</span>
                             </label>
-                            <div class="sub-filter-help">
-                                Show sentiment options for review annotations only.
+
+                            <div class="checkbox-list" id="attribute-list">
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="battery_type"><span>battery_type</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="brand_trust"><span>brand_trust</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="brightness"><span>brightness</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="build_quality"><span>build_quality</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="capacity"><span>capacity</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="color"><span>color</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="comfort"><span>comfort</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="compatibility"><span>compatibility</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="customer_service"><span>customer_service</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="design"><span>design</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="durability"><span>durability</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="ease_of_cleaning"><span>ease_of_cleaning</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="ease_of_use"><span>ease_of_use</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="environmental_impact"><span>environmental_impact</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="included_items"><span>included_items</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="insulation"><span>insulation</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="leak_resistance"><span>leak_resistance</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="material"><span>material</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="odor_resistance"><span>odor_resistance</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="overall"><span>overall</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="performance"><span>performance</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="portability"><span>portability</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="power"><span>power</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="price"><span>price</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="privacy"><span>privacy</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="purchase_intent"><span>purchase_intent</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="purchase_recommendation"><span>purchase_recommendation</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="quantity"><span>quantity</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="runtime"><span>runtime</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="rust_resistance"><span>rust_resistance</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="safety_certification"><span>safety_certification</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="seller_description_accuracy"><span>seller_description_accuracy</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="sharpness"><span>sharpness</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="size"><span>size</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="stability"><span>stability</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="storage"><span>storage</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="sun_protection"><span>sun_protection</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="temperature_rating"><span>temperature_rating</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="ventilation"><span>ventilation</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="versatility"><span>versatility</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="waterproofing"><span>waterproofing</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="weather_resistance"><span>weather_resistance</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="weight"><span>weight</span></label>
+                                <label class="filter-option"><input type="checkbox" name="attribute" value="wind_resistance"><span>wind_resistance</span></label>
                             </div>
-                        </div>
 
-                        <div id="sentiment-filter-group" class="hidden sentiment-filter-group">
-                            <div class="filter-label subheading">Sentiment</div>
+                            <div class="sub-filter-toggle">
+                                <label class="sub-filter-label">
+                                    <input type="checkbox" id="review_sentiment_only">
+                                    <span>Enable sentiment filter</span>
+                                </label>
+                                <div class="sub-filter-help">
+                                    Show sentiment options for review annotations only.
+                                </div>
+                            </div>
 
-                            <div class="checkbox-list">
-                                <label class="filter-option"><input type="checkbox" name="sentiment" value="positive"><span>positive</span></label>
-                                <label class="filter-option"><input type="checkbox" name="sentiment" value="negative"><span>negative</span></label>
-                                <label class="filter-option"><input type="checkbox" name="sentiment" value="neutral"><span>neutral</span></label>
+                            <div id="sentiment-filter-group" class="hidden" style="margin-top: 12px;">
+                                <div class="filter-label" style="font-size:18px;">Sentiment</div>
+                                <div class="checkbox-list">
+                                    <label class="filter-option"><input type="checkbox" name="sentiment" value="positive"><span>positive</span></label>
+                                    <label class="filter-option"><input type="checkbox" name="sentiment" value="negative"><span>negative</span></label>
+                                    <label class="filter-option"><input type="checkbox" name="sentiment" value="neutral"><span>neutral</span></label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="actions">
-                    <button class="apply-btn" type="submit" form="search-form">Apply Filters</button>
-                    <button class="clear-btn" type="button" onclick="clearFilters()">Clear Filters</button>
-                </div>
-            </aside>
-
-            <section class="results-panel">
-                <div class="results-header-sticky">
-                    <h2>Results</h2>
-
-                    <div id="results-summary" class="results-summary hidden"></div>
-
-                    <div class="sort-legend-row">
-                        <div class="sort-bar">
-                            <label for="sort_by"><strong>Sort by:</strong></label>
-                            <select id="sort_by">
-                                <option value="relevance_desc">Relevance: high to low</option>
-                                <option value="relevance_asc">Relevance: low to high</option>
-                                <option value="rating_desc">Rating: high to low</option>
-                                <option value="rating_asc">Rating: low to high</option>
-                                <option value="doc_id_desc">Doc ID: high to low</option>
-                                <option value="doc_id_asc">Doc ID: low to high</option>
-                            </select>
-                        </div>
-
-                        <div class="sentiment-legend-inline">
-                            <span class="legend-title-inline"><strong>Legend:</strong></span>
-                            <span class="legend-inline-item"><span class="legend-swatch legend-positive"></span> positive</span>
-                            <span class="legend-inline-item"><span class="legend-swatch legend-negative"></span> negative</span>
-                            <span class="legend-inline-item"><span class="legend-swatch legend-neutral"></span> neutral</span>
-                            <span class="legend-inline-item"><span class="legend-swatch legend-overlap"></span> overlap</span>
-                            <span class="legend-inline-item"><span class="legend-query-chip">query match</span></span>
-                        </div>
+                    <div class="actions">
+                        <button class="apply-btn" type="button" onclick="searchReviews()">Apply Filters</button>
+                        <button class="clear-btn" type="button" onclick="clearFilters()">Clear Filters</button>
                     </div>
-                </div>
+                </aside>
 
-                <div id="results">
-                    <div class="message muted">No results found.</div>
-                </div>
+                <section class="results-panel">
+                    <div class="results-header-sticky">
+                        <h2>Results</h2>
+                        <div id="results-summary" class="results-summary"></div>
 
-                <div id="pagination-controls" class="pagination-controls hidden">
-                    <div id="result-range" class="result-range"></div>
-
-                    <div class="pagination-row">
-                        <div class="page-size-control">
-                            <label for="page_size"><strong>Results per page:</strong></label>
-                            <select id="page_size">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20" selected>20</option>
-                                <option value="50">50</option>
-                            </select>
-                        </div>
-
-                        <div class="page-nav">
-                            <button id="prev_page_btn" type="button">Previous</button>
-
-                            <div class="page-jump-wrap">
-                                <span>Page</span>
-                                <input
-                                    id="page_jump_input"
-                                    class="page-jump-input"
-                                    type="number"
-                                    min="1"
-                                    value="1"
-                                >
-                                <span id="page_total_text">of 1</span>
+                        <div class="sort-legend-row results-toolbar">
+                            <div class="page-size-control">
+                                <label for="page_size"><strong>Results per page:</strong></label>
+                                <select id="page_size">
+                                    <option value="10">10</option>
+                                    <option value="20" selected>20</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                            
+                            <div class="sort-bar">
+                                <label for="sort_by"><strong>Sort by:</strong></label>
+                                <select id="sort_by">
+                                    <option value="relevance_desc">Relevance: high to low</option>
+                                    <option value="relevance_asc">Relevance: low to high</option>
+                                    <option value="rating_desc">Rating: high to low</option>
+                                    <option value="rating_asc">Rating: low to high</option>
+                                    <option value="doc_id_desc">Doc ID: high to low</option>
+                                    <option value="doc_id_asc">Doc ID: low to high</option>
+                                </select>
                             </div>
 
-                            <button id="next_page_btn" type="button">Next</button>
+                            <div class="sentiment-legend-inline sentiment-legend-box">
+                                <div class="legend-title legend-title-inline">Legend:</div>
+                                <div class="legend-inline">
+                                    <div class="legend-item legend-inline-item"><span class="legend-swatch legend-positive"></span> positive</div>
+                                    <div class="legend-item legend-inline-item"><span class="legend-swatch legend-negative"></span> negative</div>
+                                    <div class="legend-item legend-inline-item"><span class="legend-swatch legend-neutral"></span> neutral</div>
+                                    <div class="legend-item legend-inline-item"><span class="legend-swatch legend-overlap"></span> overlap</div>
+                                    <div class="legend-item legend-inline-item"><span class="legend-query-chip">query match</span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div id="details-container" style="display:none;">
-                    <h2 class="details-heading">Document Details</h2>
-                    <div id="details" class="details-panel"></div>
-                </div>
-            </section>
-        </div>
+                    <div id="results">
+                        <div class="message muted">No results found.</div>
+                    </div>
+
+                    <div id="pagination-controls" class="pagination-controls hidden">
+                        <div id="result-range" class="result-range"></div>
+                        <div class="pagination-row">
+                            <div class="page-nav">
+                                <button id="prev_page_btn" type="button">Previous</button>
+                                <div class="page-jump-wrap">
+                                    <label for="page_jump_input">Page</label>
+                                    <input id="page_jump_input" class="page-jump-input" type="number" min="1" value="1">
+                                    <span id="page_total_text">of 1</span>
+                                </div>
+                                <button id="next_page_btn" type="button">Next</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="details-container" style="display:none;">
+                        <h2 class="details-heading">Document Details</h2>
+                        <div id="details" class="details-panel"></div>
+                    </div>
+                </section>
+            </div>
+        </section>
     </div>
+
+    <button id="back-to-top-btn" class="back-to-top-btn hidden" type="button">
+        Back to top
+    </button>
 
     <script src="{{ url_for('frontend', path='app.js') }}"></script>
 </body>
