@@ -28,9 +28,7 @@ COLX523_Freya_Leah_Wei_Yirui/
     │       ├── annotated_pair1_adjudicated.json
     │       ├── annotated_pair1_adjudicated.jsonl
     │       ├── annotated_pair2_adjudicated.json
-    │       ├── annotated_pair2_adjudicated.jsonl
-    │       ├── pair1_adjudication_conflicts.csv
-    │       └── pair2_adjudication_conflicts.csv
+    │       └── annotated_pair2_adjudicated.jsonl
     ├── src/
     │   └── interface/
     │       ├── Dockerfile
@@ -40,10 +38,15 @@ COLX523_Freya_Leah_Wei_Yirui/
     │       ├── corpus_store.py
     │       ├── annotation_store.py
     │       ├── search_service.py
-    │       └── templates/
-    │           └── index.html
+    │       └── frontend/
+    │           ├── placeholder.svg
+    │           ├── forest.jpg
+    │           ├── video.mp4
+    │           ├── index.html
+    │           ├── styles.css
+    │           └── app.js
     ├── documentation/
-    │   └── interface_plan.md
+    │   └── frontend_documentation.md
     └── Sprint_4_README.md
 ```
 
@@ -162,9 +165,27 @@ The backend also provides a document-level endpoint for retrieving a merged anno
 
 ------------------------------------------------------------------------
 
+# Frontend Implementation
+
+The Sprint 4 frontend is implemented as a browser-based interface built with HTML, CSS, and JavaScript. It provides an interactive environment for searching the Coleman review corpus and exploring annotation results returned by the backend API. The interface supports keyword queries over multiple fields (`all`, `title`, `description`, and `reviewText`) and allows users to refine results using annotation-based filters such as `attribute` and optional `sentiment` filters for review annotations.
+
+The frontend communicates with the FastAPI backend through asynchronous HTTP requests using the Fetch API. When a user submits a query, the interface sends the selected parameters to the `/api/search` endpoint and receives a JSON response containing search results and annotation data. Results are stored in memory on the client side and then processed for sorting, pagination, and rendering. The interface also supports retrieving full document records through the `/api/doc/{doc_id}` endpoint, which are displayed in a separate document details panel.
+
+Search results are presented as result cards that include product images, document identifiers, ratings, text snippets, and retrieval relevance scores. If annotation data is available, the frontend groups annotations by section (`title`, `description`, and `review`) and displays them using annotation chips and inline highlighted spans. Review annotations are rendered using a segmentation-based method that allows overlapping annotation spans to be displayed correctly with sentiment-based highlighting and tooltip metadata.
+
+Several client-side features are implemented to improve usability and navigation. These include dynamic filter panels, query-term highlighting, client-side sorting, configurable pagination, page jump controls, a sticky results header, and a floating back-to-top button. The interface also includes a branded hero landing section with a background video and animated transition into the corpus exploration interface.
+
+Overall, the frontend is designed to provide a clear and interactive way to explore the Coleman review corpus and its annotation data while keeping the architecture lightweight and fully integrated with the FastAPI backend.
+
+------------------------------------------------------------------------
+
 # Team Report
 
 ### **Wei**
+- Implemented the core frontend architecture and client-side logic for the corpus search interface using HTML, CSS, and JavaScript.
+- Developed the frontend–backend integration using the Fetch API to send search requests and retrieve document details from the FastAPI endpoints.
+- Built the main interface structure, including the search bar, filter sidebar, results panel, and document details panel.
+- Implemented core search interaction features such as query submission, filter logic for search selection, and pagination.
   
 ### **Yirui**  
   
@@ -174,146 +195,10 @@ The backend also provides a document-level endpoint for retrieving a merged anno
   - Aligned the backend with the project data layout by using `DATA_DIR` and merging adjudicated annotation data with full-corpus metadata.
 
 ### **Leah (the scrum leader this week)**  
-  
-All major design decisions were discussed collaboratively.  
-Pull requests were reviewed by team members prior to merging: 
 -   The backend and frontend are served from the **same container** on port `8000`. You do not need a separate frontend server.
 -   The `index.html` template is in `src/interface/templates/`. Edit it there and rebuild the image with `docker compose up --build`.
 -   The data directory is mounted as **read-only** inside the container — the container cannot modify the data files.
 -   The `DATA_DIR` environment variable controls where the app looks for data. Inside Docker it is set to `/data`. Locally it defaults to `../../data`.
 
-# Front-end Documentation
-
-## Overview
-
-This front end is a browser-based interface for searching the Coleman Amazon Product Reviews corpus and viewing annotation results returned by the Python back end.
-
-The interface allows users to:
-
--   enter a keyword query
--   choose which field to search (`all`, `title`, `description`, or `reviewText`)
--   restrict results to annotated documents only
--   filter results by annotation attribute
--   optionally filter review annotations by sentiment
--   sort returned results
--   inspect annotation results for title, description, and review text
--   view full document details for a selected result
-
-## Technical Structure
-
-The front end is implemented with HTML, CSS, and JavaScript.
-
-### HTML
-
-The HTML defines the page structure, including:
-
--   a top search bar
--   a left filter sidebar
--   a results panel
--   a document details panel
-
-### CSS
-
-The CSS controls:
-
--   page layout
--   panel styling
--   spacing and alignment
--   search/result card appearance
--   annotation chip styles
--   review span highlighting
--   query-match highlighting
--   transparent background styling
-
-### JavaScript
-
-The JavaScript is responsible for:
-
--   reading the current query and filter settings from the page
--   sending requests to the back end
--   receiving JSON results
--   rendering search results dynamically
--   sorting returned results on the client side
--   displaying annotation sections
--   highlighting query matches
--   rendering review spans with sentiment-based color coding
--   fetching and displaying detailed document JSON for a selected result
-
-## Backend Interaction
-
-The front end communicates with the FastAPI back end using HTTP GET requests.
-
-### Search endpoint
-
-The main search request is sent to: `/api/search`
-
-The front end sends:
-
--   `q` for the query text
--   `field` for the selected search field
--   `annotated_only` for annotated-only filtering
--   one or more `attribute` values when attribute filters are selected
--   one or more `sentiment` values when sentiment filtering is enabled
-
-### Document details endpoint
-
-When the user clicks **View Details**, the front end sends a request to: `/api/doc/{doc_id}`
-
-The returned JSON is then displayed in the document details panel.
-
-## Annotation Display
-
-If annotation data is available, the front end groups it into:
-
--   title annotations
--   description annotations
--   review annotations
-
-Title and description annotations are displayed as chips.
-
-Review annotations are displayed by:
-
-1.  reading span boundaries from the annotation metadata
-2.  splitting the review text into segments
-3.  checking which annotations cover each segment
-4.  applying sentiment-based highlighting
-5.  showing hover information for label/sentiment
-6.  displaying a legend under the review text
-
-This was important because the adjudicated annotation data contains overlapping spans in some cases, so the review view needs more than a simple one-pass highlighter.
-
-## Extra Interface Features
-
-In addition to the basic search/filter functionality, the interface includes:
-
--   sentiment legend
--   query-term highlighting in titles, snippets, and review text
--   client-side sorting
--   placeholder image fallback for products without images
--   translucent themed background styling
--   hover information for annotated review spans
-
-## Restrictions / Limitations
-
-The current front end has the following restrictions:
-
-1.  It depends on the FastAPI back end running locally and responding correctly.
-2.  It depends on the corpus and annotation data being available in the expected directories.
-3.  It is designed primarily for desktop/laptop browsers.
-4.  Static assets such as the background image and placeholder image must be served correctly.
-5.  Multi-select attribute/sentiment filtering depends on the backend handling repeated query parameters correctly.
-6.  Review annotation overlap is handled visually, but highly dense overlap may still be hard to read.
-
-## Testing
-
-We tested the front end by:
-
--   running the app locally through FastAPI/Docker
--   trying multiple search terms
--   testing annotated vs non-annotated searches
--   testing attribute and sentiment filters
--   testing different sort options
--   checking placeholder image fallback
--   checking query highlighting in title, snippet, and review text
--   checking document detail retrieval
--   testing the interface in different web browsers (Google Chrome and Safari)
+All major design decisions were discussed collaboratively.  
+Pull requests were reviewed by team members prior to merging.
