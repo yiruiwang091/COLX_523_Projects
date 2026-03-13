@@ -70,7 +70,11 @@ cd Sprint_4/src/interface
 docker compose up --build
 ```
 
-This will: - Build the Docker image from `Dockerfile` - Mount `Sprint_4/data/` into the container at `/data` (read-only) - Start the FastAPI server on port 8000
+This will:
+
+-   Build the Docker image from `Dockerfile`
+-   Mount `Sprint_4/data/` into the container at `/data` (read-only)
+-   Start the FastAPI server on port 8000
 
 ### Step 3: Open the interface
 
@@ -121,7 +125,7 @@ http://127.0.0.1:8000
 # API Endpoints
 
 | Endpoint | Method | Description |
-|------------------|------------------|------------------------------------|
+|-------------------|-------------------|----------------------------------|
 | `/` | GET | Serves the HTML search interface |
 | `/api/search` | GET | Search the corpus by keyword, with optional annotation-based filters |
 | `/api/doc/{doc_id}` | GET | Fetch a single document with its merged annotation data |
@@ -130,7 +134,7 @@ http://127.0.0.1:8000
 ### `/api/search` query parameters
 
 | Parameter | Type | Default | Description |
-|-----------------|-----------------|-----------------|-----------------------|
+|------------------|------------------|------------------|--------------------|
 | `query` | str | `""` | Search keyword(s) |
 | `q` | str | `""` | Backward-compatible alias for `query` |
 | `field` | str | `"all"` | Field to search: `all`, `title`, `description`, `reviewText` |
@@ -157,7 +161,7 @@ The backend integrates two data sources. The adjudicated files, `annotated_pair1
 
 The API returns enriched search results that include `doc_id`, `title`, `snippet`, `overall`, `imageURL`, `reviewText`, and retrieval score (relevance). When a query is annotation-driven, such as `annotated_only=true` or when `attribute` or `sentiment` filters are used, the backend also returns parsed annotations and section-aware annotation payloads for `title`, `description`, and `review`. For the review section in particular, the backend returns the full `reviewText` together with review annotation spans, labels, and sentiments, so the frontend can render the complete review text and highlight attribute mentions inline.
 
-The backend also provides a document-level endpoint for retrieving a merged annotated review record and its parsed annotations, as well as an options endpoint for frontend dropdowns. Data paths are configured through the `DATA_DIR` environment variable, which is set in Docker Compose and points to the mounted data directory. Added static file support so the backend can serve frontend assets properly. This keeps the service portable across local and containerized execution while maintaining a consistent project data layout.
+The backend also provides a document-level endpoint for retrieving a merged annotated review record and its parsed annotations, an options endpoint for frontend dropdowns, and static file support so as to serve frontend assets properly. Data paths are configured through the ⁠ `DATA_DIR` ⁠ environment variable, which is set in Docker Compose and points to the mounted data directory.
 
 ------------------------------------------------------------------------
 
