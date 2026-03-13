@@ -70,10 +70,7 @@ cd Sprint_4/src/interface
 docker compose up --build
 ```
 
-This will: 
-- Build the Docker image from `Dockerfile`
-- Mount `Sprint_4/data/` into the container at `/data` (read-only)
-- Start the FastAPI server on port 8000
+This will: - Build the Docker image from `Dockerfile` - Mount `Sprint_4/data/` into the container at `/data` (read-only) - Start the FastAPI server on port 8000
 
 ### Step 3: Open the interface
 
@@ -124,17 +121,16 @@ http://127.0.0.1:8000
 # API Endpoints
 
 | Endpoint | Method | Description |
-|-----------------|-----------------|---------------------------------------|
+|------------------|------------------|------------------------------------|
 | `/` | GET | Serves the HTML search interface |
 | `/api/search` | GET | Search the corpus by keyword, with optional annotation-based filters |
 | `/api/doc/{doc_id}` | GET | Fetch a single document with its merged annotation data |
 | `/api/options` | GET | Return available dropdown options for fields, attributes, and sentiments |
 
-
 ### `/api/search` query parameters
 
 | Parameter | Type | Default | Description |
-|--------------|--------------|--------------|-----------------------------|
+|-----------------|-----------------|-----------------|-----------------------|
 | `query` | str | `""` | Search keyword(s) |
 | `q` | str | `""` | Backward-compatible alias for `query` |
 | `field` | str | `"all"` | Field to search: `all`, `title`, `description`, `reviewText` |
@@ -161,7 +157,7 @@ The backend integrates two data sources. The adjudicated files, `annotated_pair1
 
 The API returns enriched search results that include `doc_id`, `title`, `snippet`, `overall`, `imageURL`, `reviewText`, and retrieval score (relevance). When a query is annotation-driven, such as `annotated_only=true` or when `attribute` or `sentiment` filters are used, the backend also returns parsed annotations and section-aware annotation payloads for `title`, `description`, and `review`. For the review section in particular, the backend returns the full `reviewText` together with review annotation spans, labels, and sentiments, so the frontend can render the complete review text and highlight attribute mentions inline.
 
-The backend also provides a document-level endpoint for retrieving a merged annotated review record and its parsed annotations, as well as an options endpoint for frontend dropdowns. Data paths are configured through the `DATA_DIR` environment variable, which is set in Docker Compose and points to the mounted data directory. This keeps the service portable across local and containerized execution while maintaining a consistent project data layout.
+The backend also provides a document-level endpoint for retrieving a merged annotated review record and its parsed annotations, as well as an options endpoint for frontend dropdowns. Data paths are configured through the `DATA_DIR` environment variable, which is set in Docker Compose and points to the mounted data directory. Added static file support so the backend can serve frontend assets properly. This keeps the service portable across local and containerized execution while maintaining a consistent project data layout.
 
 ------------------------------------------------------------------------
 
@@ -182,23 +178,31 @@ Overall, the frontend is designed to provide a clear and interactive way to expl
 # Team Report
 
 ### **Wei**
-- Implemented the core frontend architecture and client-side logic for the corpus search interface using HTML, CSS, and JavaScript.
-- Developed the frontend–backend integration using the Fetch API to send search requests and retrieve document details from the FastAPI endpoints.
-- Built the main interface structure, including the search bar, filter sidebar, results panel, and document details panel.
-- Implemented core search interaction features such as query submission, filter logic for search selection, and pagination.
-  
-### **Yirui**  
-  
-### **Freya**  
-  - Updated the backend to match the final interface contract, including keyword search, attribute and sentiment filtering, adjudicated-only search, and enriched search results with ratings and product images.
-  - Reworked annotation handling so the API now returns full `reviewText` along with review annotation spans, labels, and sentiments for frontend highlighting.
-  - Aligned the backend with the project data layout by using `DATA_DIR` and merging adjudicated annotation data with full-corpus metadata.
 
-### **Leah (the scrum leader this week)**  
+-   Implemented the core frontend architecture and client-side logic for the corpus search interface using HTML, CSS, and JavaScript.
+-   Developed the frontend–backend integration using the Fetch API to send search requests and retrieve document details from the FastAPI endpoints.
+-   Built the main interface structure, including the search bar, filter sidebar, results panel, and document details panel.
+-   Implemented core search interaction features such as query submission, filter logic for search selection, and pagination.
+
+### **Yirui**
+
+-   Updated the backend configuration to ensure frontend files are loaded properly through the application.
+-   Tested and refined the integrated webpage behavior, including page transitions, title display, results layout, and pagination settings.
+-   Modified interface settings and helped fix interface bugs such as title formatting, sort display order, and results-per-page limitations to improve usability.
+-   Contributed to improving the overall user experience by making the webpage more stable and easier to navigate.
+
+### **Freya**
+
+-   Updated the backend to match the final interface contract, including keyword search, attribute and sentiment filtering, adjudicated-only search, and enriched search results with ratings and product images.
+-   Reworked annotation handling so the API now returns full `reviewText` along with review annotation spans, labels, and sentiments for frontend highlighting.
+-   Aligned the backend with the project data layout by using `DATA_DIR` and merging adjudicated annotation data with full-corpus metadata.
+
+### **Leah (the scrum leader this week)**
+
 -   The backend and frontend are served from the **same container** on port `8000`. You do not need a separate frontend server.
 -   The `index.html` template is in `src/interface/templates/`. Edit it there and rebuild the image with `docker compose up --build`.
 -   The data directory is mounted as **read-only** inside the container — the container cannot modify the data files.
 -   The `DATA_DIR` environment variable controls where the app looks for data. Inside Docker it is set to `/data`. Locally it defaults to `../../data`.
 
-All major design decisions were discussed collaboratively.  
+All major design decisions were discussed collaboratively.\
 Pull requests were reviewed by team members prior to merging.
