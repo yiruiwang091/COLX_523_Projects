@@ -279,12 +279,12 @@ button {
     position: sticky;
     top: 0;
     z-index: 30;
-    background: transparent;
+    background: rgba(243, 243, 243, 0.85);
     padding-top: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(204, 204, 204, 0.85);
-    backdrop-filter: none;
-    border-radius: 12px 12px 0 0;
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
 }
 
 .results-summary {
@@ -702,6 +702,26 @@ button {
 .tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+.back-to-top-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2000;
+    padding: 12px 18px;
+    font-size: 15px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(243, 243, 243, 0.98);
+    border: 1px solid rgba(204, 204, 204, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+}
+
+.back-to-top-btn:hover {
+    background: rgba(224, 224, 224, 0.98);
 }
 
 @media (max-width: 980px) {

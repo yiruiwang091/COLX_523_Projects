@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const sentimentFilterGroup = document.getElementById("sentiment-filter-group");
     const selectAllAttributesCheckbox = document.getElementById("select_all_attributes");
     const form = document.getElementById("search-form");
+    
+    const backToTopBtn = document.getElementById("back-to-top-btn");
 
     const sortBySelect = document.getElementById("sort_by");
     const resultsDiv = document.getElementById("results");
@@ -187,6 +189,14 @@ document.addEventListener("DOMContentLoaded", function () {
         selectAllAttributesCheckbox.indeterminate =
             checkedCount > 0 && checkedCount < attributeCheckboxes.length;
     }
+    
+    function updateBackToTopVisibility() {
+        if (window.scrollY > 100) {
+            backToTopBtn.classList.remove("hidden");
+        } else {
+            backToTopBtn.classList.add("hidden");
+        }
+    }
 
     function updateFilterVisibility() {
         const showAnnotationFilters = annotatedOnlyCheckbox.checked;
@@ -254,6 +264,12 @@ document.addEventListener("DOMContentLoaded", function () {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     });
+    
+    backToTopBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    
+    window.addEventListener("scroll", updateBackToTopVisibility);
 
     pageJumpInput.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
@@ -668,4 +684,5 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     updateFilterVisibility();
+    updateBackToTopVisibility();
 });
