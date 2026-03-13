@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("search-form");
     
     const backToTopBtn = document.getElementById("back-to-top-btn");
+    const heroVideo = document.getElementById("hero-video");
+    const heroVideoToggle = document.getElementById("hero-video-toggle");
+    const enterCorpusBtn = document.getElementById("enter-corpus-btn");
+    const corpusSection = document.getElementById("corpus-section");
+    const heroSection = document.getElementById("hero");
 
     const sortBySelect = document.getElementById("sort_by");
     const resultsDiv = document.getElementById("results");
@@ -29,10 +34,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let allResults = [];
     let currentPage = 1;
 
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        searchReviews();
-    });
+    if (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            searchReviews();
+        });
+    }
 
     function escapeHtml(value) {
         if (value === null || value === undefined) return "";
@@ -70,10 +77,10 @@ document.addEventListener("DOMContentLoaded", function () {
             items.sort((a, b) => (Number(a.score) || Infinity) - (Number(b.score) || Infinity));
         } else if (sortBy === "relevance_desc") {
             items.sort((a, b) => (Number(b.score) || -Infinity) - (Number(a.score) || -Infinity));
-        } else if (sortBy === "rating_desc") {
-            items.sort((a, b) => (Number(b.overall) || -Infinity) - (Number(a.overall) || -Infinity));
         } else if (sortBy === "rating_asc") {
             items.sort((a, b) => (Number(a.overall) || Infinity) - (Number(b.overall) || Infinity));
+        } else if (sortBy === "rating_desc") {
+            items.sort((a, b) => (Number(b.overall) || -Infinity) - (Number(a.overall) || -Infinity));
         } else if (sortBy === "doc_id_asc") {
             items.sort((a, b) =>
                 String(a.doc_id).localeCompare(String(b.doc_id), undefined, { numeric: true })
@@ -90,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getPageSize() {
-        return Number(pageSizeSelect.value) || 20;
+        return pageSizeSelect ? (Number(pageSizeSelect.value) || 20) : 20;
     }
 
     function getPaginatedResults(results, page, pageSize) {
@@ -104,11 +111,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
         if (totalCount === 0) {
-            paginationControls.classList.add("hidden");
-            resultRange.textContent = "";
-            pageJumpInput.value = 1;
-            pageJumpInput.max = 1;
-            pageTotalText.textContent = "of 1";
+            if (paginationControls) paginationControls.classList.add("hidden");
+            if (resultRange) resultRange.textContent = "";
+            if (pageJumpInput) { pageJumpInput.value = 1; pageJumpInput.max = 1; }
+            if (pageTotalText) pageTotalText.textContent = "of 1";
             return;
         }
 
@@ -119,16 +125,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const start = (currentPage - 1) * pageSize + 1;
         const end = Math.min(currentPage * pageSize, totalCount);
 
-        resultRange.textContent = `Showing ${start}–${end} of ${totalCount} results`;
+        if (resultRange) resultRange.textContent = `Showing ${start}–${end} of ${totalCount} results`;
 
-        pageJumpInput.value = currentPage;
-        pageJumpInput.max = totalPages;
-        pageTotalText.textContent = `of ${totalPages}`;
+        if (pageJumpInput) {
+            pageJumpInput.value = currentPage;
+            pageJumpInput.max = totalPages;
+        }
+        if (pageTotalText) pageTotalText.textContent = `of ${totalPages}`;
 
-        prevPageBtn.disabled = currentPage <= 1;
-        nextPageBtn.disabled = currentPage >= totalPages;
+        if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
+        if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
 
-        paginationControls.classList.remove("hidden");
+        if (paginationControls) paginationControls.classList.remove("hidden");
     }
 
     function jumpToPage() {
@@ -223,64 +231,110 @@ document.addEventListener("DOMContentLoaded", function () {
         syncSelectAllAttributesState();
     }
 
-    annotatedOnlyCheckbox.addEventListener("change", updateFilterVisibility);
-    reviewSentimentOnlyCheckbox.addEventListener("change", updateFilterVisibility);
+    if (annotatedOnlyCheckbox) annotatedOnlyCheckbox.addEventListener("change", updateFilterVisibility);
+    if (reviewSentimentOnlyCheckbox) reviewSentimentOnlyCheckbox.addEventListener("change", updateFilterVisibility);
 
-    selectAllAttributesCheckbox.addEventListener("change", function () {
-        const checked = this.checked;
-        getAttributeCheckboxes().forEach(cb => {
-            cb.checked = checked;
+    if (selectAllAttributesCheckbox) {
+        selectAllAttributesCheckbox.addEventListener("change", function () {
+            const checked = this.checked;
+            getAttributeCheckboxes().forEach(cb => {
+                cb.checked = checked;
+            });
+            this.indeterminate = false;
         });
-        this.indeterminate = false;
-    });
+    }
 
     getAttributeCheckboxes().forEach(cb => {
         cb.addEventListener("change", syncSelectAllAttributesState);
     });
 
-    sortBySelect.addEventListener("change", function () {
-        currentPage = 1;
-        renderResults();
-    });
-
-    pageSizeSelect.addEventListener("change", function () {
-        currentPage = 1;
-        renderResults();
-    });
-
-    prevPageBtn.addEventListener("click", function () {
-        if (currentPage > 1) {
-            currentPage -= 1;
+    if (sortBySelect) {
+        sortBySelect.addEventListener("change", function () {
+            currentPage = 1;
             renderResults();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-    });
+        });
+    }
 
-    nextPageBtn.addEventListener("click", function () {
-        const totalPages = Math.max(1, Math.ceil(allResults.length / getPageSize()));
-        if (currentPage < totalPages) {
-            currentPage += 1;
+    if (pageSizeSelect) {
+        pageSizeSelect.addEventListener("change", function () {
+            currentPage = 1;
             renderResults();
+        });
+    }
+
+    if (prevPageBtn) {
+        prevPageBtn.addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage -= 1;
+                renderResults();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        });
+    }
+
+    if (nextPageBtn) {
+        nextPageBtn.addEventListener("click", function () {
+            const totalPages = Math.max(1, Math.ceil(allResults.length / getPageSize()));
+            if (currentPage < totalPages) {
+                currentPage += 1;
+                renderResults();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        });
+    }
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener("click", function () {
             window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-    });
-    
-    backToTopBtn.addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-    
+        });
+    }
+
     window.addEventListener("scroll", updateBackToTopVisibility);
 
-    pageJumpInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            jumpToPage();
-        }
-    });
+    if (pageJumpInput) {
+        pageJumpInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                jumpToPage();
+            }
+        });
+    }
+    
+    if (heroVideo && heroVideoToggle) {
+        heroVideoToggle.addEventListener("click", function () {
+            if (heroVideo.paused) {
+                heroVideo.play();
+                heroVideoToggle.textContent = "❚❚";
+                heroVideoToggle.setAttribute("aria-label", "Pause video");
+            } else {
+                heroVideo.pause();
+                heroVideoToggle.textContent = "▷";
+                heroVideoToggle.setAttribute("aria-label", "Play video");
+            }
+        });
+    }
+    
+    if (enterCorpusBtn && corpusSection && heroSection) {
+        enterCorpusBtn.addEventListener("click", function () {
+            corpusSection.classList.remove("hidden");
+    
+            requestAnimationFrame(() => {
+                corpusSection.classList.add("corpus-visible");
+                heroSection.classList.add("hero-exit");
+            });
+    
+            setTimeout(() => {
+                heroSection.classList.add("hidden");
+                window.scrollTo({ top: 0, behavior: "auto" });
+            }, 700);
+        });
+    }
 
-    pageJumpInput.addEventListener("blur", function () {
-        jumpToPage();
-    });
+    if (pageJumpInput) {
+        pageJumpInput.addEventListener("blur", function () {
+            jumpToPage();
+        });
+    }
 
     function buildSnippetText(r) {
         const text = r.snippet || "";
@@ -525,7 +579,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!sortedResults.length) {
             resultsDiv.innerHTML = `<div class="message muted">No results found.</div>`;
-            paginationControls.classList.add("hidden");
+            if (paginationControls) paginationControls.classList.add("hidden");
             return;
         }
 
@@ -559,11 +613,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
                     <div class="result-main">
-                        <div class="result-line"><strong>Doc ID:</strong> ${escapeHtml(r.doc_id)}</div>
-                        <div class="result-line"><strong>Title:</strong> ${titleHtml}</div>
-                        <div class="result-line snippet"><strong>Snippet:</strong> ${snippetHtml}</div>
-                        <div class="result-line rating"><strong>Rating:</strong> ${ratingText}</div>
-                        <div class="result-line score">
+                        <div class="result-header">
+                            <div class="result-title">${titleHtml}</div>
+                            <div class="result-meta">
+                                <span class="meta-pill"><strong>Doc ID</strong> ${escapeHtml(r.doc_id)}</span>
+                                <span class="meta-pill"><strong>Rating</strong> ${ratingText}</span>
+                            </div>
+                        </div>
+
+                        <div class="result-snippet-block">
+                            <div class="result-section-label">Snippet</div>
+                            <div class="result-snippet-box">${snippetHtml}</div>
+                        </div>
+
+                        <div class="result-score-line">
                             <strong class="tooltip">
                                 Retrieval relevance
                                 <span class="tooltip-text">
@@ -572,7 +635,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             </strong>:
                             ${typeof r.score === "number" ? r.score.toFixed(4) : ""}
                         </div>
+
                         ${annotationHtml}
+
                         <div class="result-actions">
                             <button type="button" onclick="viewDetails('${String(r.doc_id)}')">View Details</button>
                         </div>
@@ -600,7 +665,7 @@ document.addEventListener("DOMContentLoaded", function () {
         selectAllAttributesCheckbox.indeterminate = false;
 
         sortBySelect.value = "relevance_desc";
-        pageSizeSelect.value = "20";
+        if (pageSizeSelect) pageSizeSelect.value = "20";
 
         allResults = [];
         currentPage = 1;
@@ -610,7 +675,7 @@ document.addEventListener("DOMContentLoaded", function () {
         resultsDiv.innerHTML = `<div class="message muted">Filters cleared.</div>`;
         resultsSummary.classList.add("hidden");
         resultsSummary.textContent = "";
-        paginationControls.classList.add("hidden");
+        if (paginationControls) paginationControls.classList.add("hidden");
 
         detailsContainer.style.display = "none";
         detailsDiv.textContent = "";
@@ -635,7 +700,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             resultsDiv.innerHTML = `<div class="message muted">Loading...</div>`;
             resultsSummary.classList.add("hidden");
-            paginationControls.classList.add("hidden");
+            if (paginationControls) paginationControls.classList.add("hidden");
             detailsContainer.style.display = "none";
             detailsDiv.textContent = "";
 
@@ -657,7 +722,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentPage = 1;
             resultsSummary.classList.add("hidden");
             resultsDiv.innerHTML = `<div class="message error">Error: ${escapeHtml(err.message)}</div>`;
-            paginationControls.classList.add("hidden");
+            if (paginationControls) paginationControls.classList.add("hidden");
         }
     };
 
