@@ -48,6 +48,9 @@ corpus, annotations, searcher = build_services(DATA_DIR)
 def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/corpus-info", response_class=HTMLResponse)
+def corpus_info(request: Request):
+    return templates.TemplateResponse("corpus-info.html", {"request": request})
 
 @app.get("/api/options")
 def get_options():
@@ -56,7 +59,6 @@ def get_options():
         "sentiments": annotations.all_sentiments(),
         "fields": ["all", "title", "description", "reviewText"],
     }
-
 
 @app.get("/api/search")
 def search(
