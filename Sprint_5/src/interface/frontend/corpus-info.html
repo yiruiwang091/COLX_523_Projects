@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About the Corpus</title>
+    <link rel="stylesheet" href="{{ url_for('frontend', path='styles.css') }}">
+</head>
+<body>
+    <div class="page">
+        <section class="corpus-info-page">
+            <div class="page-title-wrap corpus-info-header">
+                <div class="page-title-pill">About the Corpus</div>
+                <a href="/" class="about-back-link">← Back to Search</a>
+            </div>
+
+            <div class="results-panel corpus-info-panel">
+                <div class="result">
+                    <div class="result-title">Project Overview</div>
+                    <div class="corpus-info-text">
+                        This interface supports search and annotation exploration for a
+                        Coleman-focused subset of Amazon product reviews.
+                    </div>
+                </div>
+
+                <div class="result">
+                    <div class="result-title">Data Source</div>
+                    <div class="corpus-info-text">
+                        <p>
+                            <strong>Primary source:</strong>
+                            <a href="https://nijianmo.github.io/amazon/index.html" target="_blank">
+                                Amazon Review Data (2018) by Ni et al.
+                            </a>
+                        </p>
+                        <p>
+                            <strong>Category used:</strong> Sports &amp; Outdoors
+                        </p>
+                    </div>
+                </div>
+
+                <div class="result">
+                    <div class="result-title">Corpus Scope</div>
+                    <div class="corpus-info-text">
+                        <p>
+                            We construct a Coleman-focused corpus from Sports &amp; Outdoors
+                            product metadata and user reviews.
+                        </p>
+                        <p>
+                            Search is supported over title, description, and review text.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="result">
+                    <div class="result-title">Annotation Layer</div>
+                    <div class="corpus-info-text">
+                        <p>
+                            The annotated subset includes attribute labels and review sentiment
+                            annotations for interactive exploration.
+                        </p>
+                        <p>
+                            Users can filter annotated data by attribute and sentiment in the interface.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="result">
+                    <div class="result-title">Reproducibility</div>
+                    <div class="corpus-info-text">
+                        <p>
+                            The corpus is built from a publicly available research dataset and
+                            supports a reproducible data acquisition pipeline.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="result">
+                    <div class="result-title">Project Information</div>
+                    <div class="corpus-info-text">
+                        <p>
+                            <strong>Project:</strong> MDSCL Project
+                        </p>
+                        <p>
+                            <strong>Team:</strong> Freya Kan, Leah Xiong, Yirui Wang, Wei Zhou
+                        </p>
+                        <p>
+                            <strong>License:</strong> MIT License
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
