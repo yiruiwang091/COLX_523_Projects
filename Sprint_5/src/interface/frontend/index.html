@@ -214,16 +214,24 @@
                     </div>
 
                     <div id="pagination-controls" class="pagination-controls hidden">
-                        <div id="result-range" class="result-range"></div>
-                        <div class="pagination-row">
-                            <div class="page-nav">
-                                <button id="prev_page_btn" type="button">Previous</button>
-                                <div class="page-jump-wrap">
-                                    <label for="page_jump_input">Page</label>
-                                    <input id="page_jump_input" class="page-jump-input" type="number" min="1" value="1">
-                                    <span id="page_total_text">of 1</span>
+                        <div class="pagination-bottom-row">
+                            <div class="pagination-left">
+                                <div id="result-range" class="result-range"></div>
+                                <div class="pagination-row">
+                                    <div class="page-nav">
+                                        <button id="prev_page_btn" type="button">Previous</button>
+                                        <div class="page-jump-wrap">
+                                            <label for="page_jump_input">Page</label>
+                                            <input id="page_jump_input" class="page-jump-input" type="number" min="1" value="1">
+                                            <span id="page_total_text">of 1</span>
+                                        </div>
+                                        <button id="next_page_btn" type="button">Next</button>
+                                    </div>
                                 </div>
-                                <button id="next_page_btn" type="button">Next</button>
+                            </div>
+
+                            <div class="pagination-right">
+                                <a href="/corpus-info" class="about-corpus-link">About the Corpus</a>
                             </div>
                         </div>
                     </div>
