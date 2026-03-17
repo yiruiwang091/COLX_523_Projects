@@ -1,9 +1,9 @@
 services:
   corpus-search:
-    build: .
+    build:
+      context: ../..
+      dockerfile: src/interface/Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - ../../data:/data:ro
     environment:
       - DATA_DIR=/data
