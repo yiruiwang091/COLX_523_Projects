@@ -19,7 +19,7 @@ docker compose up --build
 This will:
 
 -   Build the Docker image from `Dockerfile`
--   Mount `Sprint_4/data/` into the container at `/data` (read-only)
+-   Mount `Sprint_5/data/` into the container at `/data` (read-only)
 -   Start the FastAPI server on port 8000
 
 ### Step 3: Open the interface
@@ -43,13 +43,13 @@ Use this if you want to run the backend without Docker, e.g. for fast iteration.
 ### Step 1: Install dependencies
 
 ``` bash
-pip install -r Sprint_4/src/interface/requirements.txt
+pip install -r Sprint_5/src/interface/requirements.txt
 ```
 
 ### Step 2: Navigate to the interface directory
 
 ``` bash
-cd Sprint_4/src/interface
+cd Sprint_5/src/interface
 ```
 
 ### Step 3: Start the server
@@ -58,7 +58,7 @@ cd Sprint_4/src/interface
 uvicorn app:app --reload
 ```
 
-The server reads data from `../../data` (i.e. `Sprint_4/data/`) by default.
+The server reads data from `../../data` (i.e. `Sprint_5/data/`) by default.
 
 ### Step 4: Open the interface
 
