@@ -1115,6 +1115,12 @@ button {
         margin-left: 0;
         justify-content: flex-start;
     }
+
+    .about-corpus-subtle {
+    position: static;
+    display: inline-block;
+    margin-bottom: 12px;
+    }
 }
 
 .corpus-info-page {
@@ -1166,16 +1172,36 @@ button {
     margin-bottom: 0;
 }
 
+.results-header-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(243, 243, 243, 0.94);
+    padding: 10px 0 14px;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    position: relative;
+}
+
 .results-header-top {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+}
+
+.results-header-top h2 {
+    margin: 0 0 22px;
 }
 
 .about-corpus-subtle {
+    position: absolute;
+    top: 14px;
+    right: 6px;
     font-size: 15px;
-    color: #777;
+    color: #6f6f6f;
     text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
     cursor: pointer;
     transition: color 0.15s ease, opacity 0.15s ease;
 }
