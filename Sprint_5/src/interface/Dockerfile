@@ -2,11 +2,13 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY src/interface/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app.py corpus_store.py annotation_store.py search_service.py ./
-COPY frontend/ frontend/
+COPY src/interface/app.py src/interface/corpus_store.py src/interface/annotation_store.py src/interface/search_service.py ./
+COPY src/interface/frontend/ frontend/
+
+COPY data/ /data/
 
 ENV DATA_DIR=/data
 
