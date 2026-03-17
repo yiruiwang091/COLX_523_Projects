@@ -1165,3 +1165,22 @@ button {
 .corpus-info-text p:last-child {
     margin-bottom: 0;
 }
+
+.results-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.about-corpus-subtle {
+    font-size: 15px;
+    color: #777;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.about-corpus-subtle:hover {
+    color: #333;
+    opacity: 0.9;
+}
