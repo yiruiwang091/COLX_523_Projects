@@ -24,7 +24,8 @@ Sprint_5/
 │   ├── annotation_final/
 │   └── unannotated_corpus/
 ├── documentation/
-│   └── Coleman_peer_review_instructions.md
+│   └── instructor_instructions.md
+│   └── Team_Freya_Leah_Yirui_Wei_peer_review_instructions.md
 ├── src/
 │   └── interface/
 │       ├── app.py
