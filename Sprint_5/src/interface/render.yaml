@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: colx523-corpus-search
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r src/interface/requirements.txt
+    startCommand: cd src/interface && uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.15
+      - key: DATA_DIR
+        value: ../../data
